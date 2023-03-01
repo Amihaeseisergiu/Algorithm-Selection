@@ -1,0 +1,54 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.11.9-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=pass
+    volumes:
+      - ./docker_data/rabbitmq/data:/var/lib/rabbitmq/
+      - ./docker_data/rabbitmq/log:/var/log/rabbitmq
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+      interval: 4s
+      timeout: 20s
+      retries: 3
+
+  algorithm-selector-service:
+    build: ./algorithm_selector
+    volumes:
+      - ./algorithm_selector/src:/src
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_APP=/src/service.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5000
+      - RABBITMQ_USER=user
+      - RABBITMQ_PASS=pass
+      - INSTANCES_EXCHANGE=instances
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+
+  networkx-service:
+    build: ./networkx_service
+    volumes:
+      - ./networkx_service/src:/src
+    ports:
+      - 5002:5000
+    environment:
+      - FLASK_APP=/src/service.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_RUN_PORT=5000
+      - RABBITMQ_USER=user
+      - RABBITMQ_PASS=pass
+      - INSTANCES_EXCHANGE=instances
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
