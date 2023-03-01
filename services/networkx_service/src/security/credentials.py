@@ -4,7 +4,7 @@ import pika
 
 class CredentialsProvider:
     @staticmethod
-    def get():
+    def get_credentials():
         rabbitmq_user = os.environ["RABBITMQ_USER"]
         rabbitmq_pass = os.environ["RABBITMQ_PASS"]
 

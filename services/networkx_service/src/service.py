@@ -1,27 +1,19 @@
 import os
 from flask import Flask
-from utils.consumer import Consumer
-from flask_restful import Resource, Api
+from flask_restful import Api
+from resources.root import Root
+from pubsub.instance_consumer import InstanceConsumer
 
 app = Flask(__name__)
 api = Api(app)
 
 
-class HelloWorld(Resource):
-    def get(self):
-        return {'message': "hello there"}
-
-
-api.add_resource(HelloWorld, '/')
-
-
-def callback(self, channel, method, properties, body):
-    print(f"[x] {self.name} received {body}", flush=True)
+api.add_resource(Root, '/')
 
 
 if __name__ == '__main__':
-    instances_exchange = os.environ["INSTANCES_EXCHANGE"]
-    Consumer(instances_exchange, callback).start()
+    instances_topic = os.environ["INSTANCES_TOPIC"]
+    InstanceConsumer(instances_topic).consume()
 
     host = os.environ["FLASK_RUN_HOST"]
     port = int(os.environ["FLASK_RUN_PORT"])
