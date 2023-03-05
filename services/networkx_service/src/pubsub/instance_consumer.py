@@ -1,19 +1,20 @@
 import os
-import logging
+import time
+from .algorithm_publisher import AlgorithmPublisher
 from .consumer import Consumer
-from .publisher import Publisher
 
 
 class InstanceConsumer(Consumer):
-    def __init__(self, topic):
-        super().__init__(topic, self._consume_instance)
-        self.number_of_calls = 0
+    def __init__(self):
+        instances_topic = os.environ["INSTANCES_TOPIC"]
+        instances_queue = os.environ["INSTANCES_QUEUE"]
+        super().__init__(instances_topic, instances_queue, self.__consume_instance)
 
-    def _consume_instance(self, channel, method, properties, body):
-        self.number_of_calls += 1
-        print(f"[x] [{self.number_of_calls}] Received instance to process {body}", flush=True)
+    def __consume_instance(self, data):
+        print(f"[x] Processing instance {data}", flush=True)
 
-        algorithm_result = str({"processed": body})
+        time.sleep(5)
 
-        algorithms_topic = os.environ["ALGORITHMS_TOPIC"]
-        Publisher(algorithms_topic).send(algorithm_result)
+        algorithm_result = str({"processed": data})
+
+        AlgorithmPublisher().send(algorithm_result)

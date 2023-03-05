@@ -12,10 +12,8 @@ api.add_resource(Selector, '/', '/select')
 
 
 if __name__ == '__main__':
-    algorithms_topic = os.environ["ALGORITHMS_TOPIC"]
-    AlgorithmConsumer(algorithms_topic).consume()
+    AlgorithmConsumer().consume()
 
     host = os.environ["FLASK_RUN_HOST"]
     port = int(os.environ["FLASK_RUN_PORT"])
-
-    app.run(debug=True, host=host, port=port)
+    app.run(debug=True, host=host, port=port, use_reloader=False)

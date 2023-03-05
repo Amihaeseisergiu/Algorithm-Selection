@@ -9,8 +9,8 @@ services:
       - RABBITMQ_DEFAULT_USER=user
       - RABBITMQ_DEFAULT_PASS=pass
     volumes:
-      - ./docker_data/rabbitmq/data:/var/lib/rabbitmq
-      - ./docker_data/rabbitmq/log:/var/log/rabbitmq
+      - ../docker_data/rabbitmq/data:/var/lib/rabbitmq
+      - ../docker_data/rabbitmq/log:/var/log/rabbitmq
     healthcheck:
       test: [ "CMD", "nc", "-z", "localhost", "5672" ]
       interval: 4s
@@ -31,6 +31,7 @@ services:
       - RABBITMQ_PASS=pass
       - INSTANCES_TOPIC=instances
       - ALGORITHMS_TOPIC=algorithms
+      - ALGORITHMS_QUEUE=algorithms_responses
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -49,6 +50,7 @@ services:
       - RABBITMQ_USER=user
       - RABBITMQ_PASS=pass
       - INSTANCES_TOPIC=instances
+      - INSTANCES_QUEUE=networkx
       - ALGORITHMS_TOPIC=algorithms
     depends_on:
       rabbitmq:

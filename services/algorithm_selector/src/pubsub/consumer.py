@@ -4,28 +4,34 @@ from security.credentials import CredentialsProvider
 
 
 class Consumer:
-    def __init__(self, topic, message_processor):
+    def __init__(self, topic, queue, message_processor):
         self.topic = topic
-        self.message_processor = message_processor
+        self.queue = queue
+        self.__message_processor = message_processor
 
-    def _consume_callback(self):
+    def __message_callback(self, channel, method, properties, body):
+        self.__message_processor(body)
+
+        channel.basic_ack(delivery_tag=method.delivery_tag)
+
+    def __consume_callback(self):
         parameters = pika.ConnectionParameters(host='rabbitmq', credentials=CredentialsProvider.get_credentials())
 
         connection = pika.BlockingConnection(parameters)
 
         channel = connection.channel()
+        channel.basic_qos(prefetch_count=1)
         channel.exchange_declare(exchange=self.topic, exchange_type='fanout')
-        result = channel.queue_declare(queue="", exclusive=True, auto_delete=True)
+        result = channel.queue_declare(queue=self.queue, exclusive=False, auto_delete=False, durable=True)
 
-        channel.queue_bind(result.method.queue,
+        channel.queue_bind(queue=result.method.queue,
                            exchange=self.topic,
                            routing_key="")
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(on_message_callback=self.message_processor,
-                              queue=result.method.queue, auto_ack=True)
+        channel.basic_consume(on_message_callback=self.__message_callback,
+                              queue=result.method.queue, auto_ack=False)
 
         channel.start_consuming()
 
     def consume(self):
-        thread = Thread(target=self._consume_callback)
+        thread = Thread(target=self.__consume_callback)
         thread.start()

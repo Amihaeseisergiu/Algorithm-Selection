@@ -1,7 +1,6 @@
-import os
 from flask import request
 from flask_restful import Resource
-from pubsub.publisher import Publisher
+from pubsub.instance_publisher import InstancePublisher
 
 
 class Selector(Resource):
@@ -11,7 +10,6 @@ class Selector(Resource):
     def post(self):
         instance = str(request.get_data())
 
-        instances_topic = os.environ["INSTANCES_TOPIC"]
-        Publisher(instances_topic).send(instance)
+        InstancePublisher().send(instance)
 
         return 200

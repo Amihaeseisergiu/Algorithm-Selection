@@ -1,13 +1,12 @@
-import logging
+import os
 from .consumer import Consumer
 
 
 class AlgorithmConsumer(Consumer):
-    def __init__(self, topic):
-        super().__init__(topic, self._consume_algorithm)
+    def __init__(self):
+        algorithms_topic = os.environ["ALGORITHMS_TOPIC"]
+        algorithms_queue = os.environ["ALGORITHMS_QUEUE"]
+        super().__init__(algorithms_topic, algorithms_queue, self.__consume_algorithm)
 
-        self.number_of_calls = 0
-
-    def _consume_algorithm(self, channel, method, properties, body):
-        self.number_of_calls += 1
-        print(f"[x] [{self.number_of_calls}] Received algorithm response {body}", flush=True)
+    def __consume_algorithm(self, data):
+        print(f"[x] Received algorithm response {data}", flush=True)

@@ -12,9 +12,8 @@ api.add_resource(Root, '/')
 
 
 if __name__ == '__main__':
-    instances_topic = os.environ["INSTANCES_TOPIC"]
-    InstanceConsumer(instances_topic).consume()
+    InstanceConsumer().consume()
 
     host = os.environ["FLASK_RUN_HOST"]
     port = int(os.environ["FLASK_RUN_PORT"])
-    app.run(debug=True, host=host, port=port)
+    app.run(debug=True, host=host, port=port, use_reloader=False)

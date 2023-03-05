@@ -7,7 +7,7 @@ class Publisher:
     def __init__(self, topic):
         self.topic = topic
 
-    def _callback(self, data):
+    def __callback(self, data):
         parameters = pika.ConnectionParameters(host='rabbitmq', credentials=CredentialsProvider.get_credentials())
 
         connection = pika.BlockingConnection(parameters)
@@ -20,5 +20,5 @@ class Publisher:
         connection.close()
 
     def send(self, data):
-        thread = Thread(target=self._callback, args=(data,))
+        thread = Thread(target=self.__callback, args=(data,))
         thread.start()
