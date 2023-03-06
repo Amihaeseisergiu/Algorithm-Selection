@@ -9,8 +9,11 @@ ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=5000
 ENV RABBITMQ_USER=user
 ENV RABBITMQ_PASS=pass
-ENV INSTANCES_TOPIC=instances
-ENV ALGORITHMS_TOPIC=algorithms
-ENV ALGORITHMS_QUEUE=algorithms_responses
+ENV WEB_SERVICE_INSTANCES_TOPIC=web_services_sent_instances
+ENV WEB_SERVICE_INSTANCES_QUEUE=algorithm_selectors_received_instances
+ENV ALGORITHMS_TOPIC=algorithms_sent_responses
+ENV ALGORITHMS_QUEUE=algorithm_selectors_received_algorithms
+ENV ALGORITHM_SELECTOR_INSTANCES_TOPIC=algorithm_selectors_sent_instances
+ENV ALGORITHM_SELECTOR_ALGORITHM_RESPONSES_TOPIC=algorithm_selectors_sent_algorithm_responses
 
 CMD python3 /src/service.py

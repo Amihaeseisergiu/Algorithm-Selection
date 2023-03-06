@@ -18,18 +18,16 @@ socket.on("register", (data, acknowledge) => {
 sendInstanceButton = document.getElementById('send-instance-button');
 
 sendInstanceButton.addEventListener('click', (e) => {
-    console.log("click");
-
     socket.emit(
         'send_instance',
         {
-            "id": id,
-            "instance": "test"
+            "socket_id": socket.id,
+            "data": "test"
         }
     );
 });
 
-socket.on("send_instance", (data, acknowledge) => {
+socket.on("receive_algorithm_response", (data, acknowledge) => {
     console.log(data);
 
     if (acknowledge) {
