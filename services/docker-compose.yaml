@@ -17,21 +17,20 @@ services:
       timeout: 20s
       retries: 3
 
+  web-service:
+    build: ./web_service
+    volumes:
+      - ./web_service/src:/src
+    ports:
+      - 5000:5000
+    restart: on-failure
+
   algorithm-selector-service:
     build: ./algorithm_selector
     volumes:
       - ./algorithm_selector/src:/src
     ports:
       - 5001:5000
-    environment:
-      - FLASK_APP=/src/service.py
-      - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=5000
-      - RABBITMQ_USER=user
-      - RABBITMQ_PASS=pass
-      - INSTANCES_TOPIC=instances
-      - ALGORITHMS_TOPIC=algorithms
-      - ALGORITHMS_QUEUE=algorithms_responses
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -43,15 +42,6 @@ services:
       - ./networkx_service/src:/src
     ports:
       - 5002:5000
-    environment:
-      - FLASK_APP=/src/service.py
-      - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_RUN_PORT=5000
-      - RABBITMQ_USER=user
-      - RABBITMQ_PASS=pass
-      - INSTANCES_TOPIC=instances
-      - INSTANCES_QUEUE=networkx
-      - ALGORITHMS_TOPIC=algorithms
     depends_on:
       rabbitmq:
         condition: service_healthy

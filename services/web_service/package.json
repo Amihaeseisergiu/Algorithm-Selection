@@ -1,0 +1,23 @@
+{
+  "name": "web-service",
+  "version": "1.0.0",
+  "description": "Algorithm Selection Web Service",
+  "main": "index.js",
+  "scripts": {
+    "css": "npx tailwindcss -i src/frontend/static/css/input.css -o src/frontend/static/css/main.css",
+    "css-dev": "npx tailwindcss -i src/frontend/static/css/input.css -o src/frontend/static/css/main.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amihaeseisergiu/Algorithm-Selection.git"
+  },
+  "author": "Amihaesei Sergiu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Amihaeseisergiu/Algorithm-Selection/issues"
+  },
+  "homepage": "https://github.com/Amihaeseisergiu/Algorithm-Selection#readme",
+  "dependencies": {
+    "tailwindcss": "^3.2.7"
+  }
+}
