@@ -1,7 +1,9 @@
 import os
 import time
+import json
 from .algorithm_publisher import AlgorithmPublisher
 from .consumer import Consumer
+from repository.instance_repository import InstanceRepository
 
 
 class InstanceConsumer(Consumer):
@@ -13,6 +15,11 @@ class InstanceConsumer(Consumer):
 
     def __consume_instance(self, data):
         print(f"[x] Processing instance {data}", flush=True)
+
+        data_json = json.loads(data)
+        instance_data = InstanceRepository.download_instance_file(data_json["file_id"])
+
+        print(f"[x] Instance data {instance_data}", flush=True)
 
         time.sleep(5)
 

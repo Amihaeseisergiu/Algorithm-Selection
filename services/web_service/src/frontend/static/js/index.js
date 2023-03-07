@@ -1,3 +1,6 @@
+import { get, click } from "./utils/dom.js";
+import { upload } from "./utils/ajax.js";
+
 let socket = io();
 let id = null;
 
@@ -15,16 +18,23 @@ socket.on("register", (data, acknowledge) => {
     }
 });
 
-sendInstanceButton = document.getElementById('send-instance-button');
+let sendInstanceButton = get('send-instance-button');
+let instanceFileInput = get('instance-file-input');
 
-sendInstanceButton.addEventListener('click', (e) => {
-    socket.emit(
-        'send_instance',
-        {
-            "socket_id": socket.id,
-            "data": "test"
-        }
-    );
+click(sendInstanceButton, (e) => {
+    let fileData = instanceFileInput.files[0]
+
+    upload(fileData, 'http://localhost:5000/upload', (fileId) => {
+       console.log("Uploaded file uuid: ", fileId);
+
+       socket.emit(
+            'send_instance',
+            {
+                "socket_id": socket.id,
+                "file_id": fileId
+            }
+        );
+    });
 });
 
 socket.on("receive_algorithm_response", (data, acknowledge) => {

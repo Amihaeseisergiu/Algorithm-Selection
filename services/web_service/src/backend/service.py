@@ -4,6 +4,8 @@ from flask_restful import Api
 from flask import Flask
 from flask_socketio import SocketIO
 from resources.root import Root
+from resources.upload import Upload
+from resources.download import Download
 from sockets.register import Register
 from sockets.send_instance import SendInstance
 from pubsub.algorithm_consumer import AlgorithmConsumer
@@ -14,6 +16,9 @@ eventlet.monkey_patch()
 api = Api(app)
 
 api.add_resource(Root, '/')
+api.add_resource(Upload, '/upload')
+api.add_resource(Download, "/download/<file_id>")
+
 socketio.on_event("register", Register.register)
 socketio.on_event("send_instance", SendInstance.send_instance)
 
