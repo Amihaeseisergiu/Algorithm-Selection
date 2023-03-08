@@ -5,9 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{url_for('static',filename='css/main.css')}}" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js"
+            integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.plot.ly/plotly-2.18.2.min.js"></script>
 
-    <title>Flask</title>
+    <title>Algorithm Selection</title>
 </head>
 <body>
     <button class="bg-transparent hover:bg-blue-500 text-blue-700
@@ -18,6 +21,9 @@
     </button>
 
     <input type="file" name="instance-file-input" id="instance-file-input">
+
+    <div id="plot-memory" style="width:100vw;height:250px;"></div>
+    <div id="plot-cpu" style="width:100vw;height:250px;"></div>
 
     <script type="module" charset="utf-8" src="../static/js/index.js"></script>
 </body>

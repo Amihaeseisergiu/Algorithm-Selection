@@ -1,8 +1,8 @@
 import os
-import time
 import json
-from .algorithm_publisher import AlgorithmPublisher
 from .consumer import Consumer
+from algorithm.runner import Runner
+from .algorithm_publisher import AlgorithmPublisher
 from repository.instance_repository import InstanceRepository
 
 
@@ -14,13 +14,13 @@ class InstanceConsumer(Consumer):
                          message_processor=self.__consume_instance)
 
     def __consume_instance(self, data):
-        print(f"[x] Processing instance {data}", flush=True)
-
         data_json = json.loads(data)
         instance_data = InstanceRepository.download_instance_file(data_json["file_id"])
 
         print(f"[x] Instance data {instance_data}", flush=True)
 
-        time.sleep(5)
+        metrics = Runner().run_and_get_metrics(instance_data)
 
-        AlgorithmPublisher().send(data)
+        data_json["metrics"] = metrics
+
+        AlgorithmPublisher().send(json.dumps(data_json))

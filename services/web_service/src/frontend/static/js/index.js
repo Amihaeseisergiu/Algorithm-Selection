@@ -38,9 +38,64 @@ click(sendInstanceButton, (e) => {
 });
 
 socket.on("receive_algorithm_response", (data, acknowledge) => {
-    console.log(data);
-
     if (acknowledge) {
         acknowledge();
     }
+
+    let metrics = data["metrics"];
+    let data_points = metrics["memory"].length;
+
+    let x_axis = [...Array(data_points).keys()];
+
+    let plotMemory = get("plot-memory");
+    let plotCpu = get("plot-cpu");
+
+    console.log(metrics);
+    console.log(data_points);
+    console.log(x_axis);
+
+    let memoryTrace = {
+        x: x_axis,
+        y: metrics["memory"],
+        mode: 'lines+markers',
+        name: 'Memory (MB)'
+    };
+
+    let cpuTrace = {
+        x: x_axis,
+        y: metrics["cpu"],
+        mode: 'lines+markers',
+        name: 'CPU %'
+    };
+
+    let memoryLayout = {
+        title: 'Memory usage over time',
+        xaxis: {
+            title: {
+              text: 'Time (s)'
+            },
+          },
+        yaxis: {
+            title: {
+              text: 'Memory (MB)'
+            }
+          }
+    };
+
+    let cpuLayout = {
+        title: 'CPU usage over time',
+        xaxis: {
+            title: {
+              text: 'Time (s)'
+            },
+          },
+        yaxis: {
+            title: {
+              text: 'CPU (%)'
+            }
+          }
+    };
+
+    Plotly.newPlot(plotMemory, [memoryTrace], memoryLayout);
+    Plotly.newPlot(plotCpu, [cpuTrace], cpuLayout);
 });
