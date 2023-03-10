@@ -1,5 +1,7 @@
 import { get, click } from "./utils/dom.js";
 import { upload } from "./utils/ajax.js";
+import { addPlotTimeData, createAlgorithmPlots } from "./utils/chart.js";
+import { createLibraryHTML } from "./components/metrics.js";
 
 let socket = io();
 let id = null;
@@ -37,65 +39,26 @@ click(sendInstanceButton, (e) => {
     });
 });
 
-socket.on("receive_algorithm_response", (data, acknowledge) => {
-    if (acknowledge) {
-        acknowledge();
+socket.on("metric_emit", (data, acknowledge) => {
+    let emitState = data["payload"]["emit_state"];
+    let libraryName = data["header"]["library_name"];
+
+    if (emitState === "start") {
+        let librariesElement = get("libraries");
+
+        let newLibraryElement = createLibraryHTML(libraryName);
+        librariesElement.appendChild(newLibraryElement);
+
+        createAlgorithmPlots(libraryName);
+    } else if (emitState === "intermediate") {
+        let metrics = data["payload"]["metrics"];
+
+        let memoryPlot = window[`${libraryName}-memory-plot`];
+        let cpuPlot = window[`${libraryName}-cpu-plot`];
+
+        addPlotTimeData(memoryPlot, metrics["memory"]);
+        addPlotTimeData(cpuPlot, metrics["cpu"]);
+    } else if (emitState === "end") {
+        get(`${libraryName}-spinner`).remove();
     }
-
-    let metrics = data["metrics"];
-    let data_points = metrics["memory"].length;
-
-    let x_axis = [...Array(data_points).keys()];
-
-    let plotMemory = get("plot-memory");
-    let plotCpu = get("plot-cpu");
-
-    console.log(metrics);
-    console.log(data_points);
-    console.log(x_axis);
-
-    let memoryTrace = {
-        x: x_axis,
-        y: metrics["memory"],
-        mode: 'lines+markers',
-        name: 'Memory (MB)'
-    };
-
-    let cpuTrace = {
-        x: x_axis,
-        y: metrics["cpu"],
-        mode: 'lines+markers',
-        name: 'CPU %'
-    };
-
-    let memoryLayout = {
-        title: 'Memory usage over time',
-        xaxis: {
-            title: {
-              text: 'Time (s)'
-            },
-          },
-        yaxis: {
-            title: {
-              text: 'Memory (MB)'
-            }
-          }
-    };
-
-    let cpuLayout = {
-        title: 'CPU usage over time',
-        xaxis: {
-            title: {
-              text: 'Time (s)'
-            },
-          },
-        yaxis: {
-            title: {
-              text: 'CPU (%)'
-            }
-          }
-    };
-
-    Plotly.newPlot(plotMemory, [memoryTrace], memoryLayout);
-    Plotly.newPlot(plotCpu, [cpuTrace], cpuLayout);
 });

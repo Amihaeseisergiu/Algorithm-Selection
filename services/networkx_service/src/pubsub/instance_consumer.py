@@ -2,7 +2,6 @@ import os
 import json
 from .consumer import Consumer
 from algorithm.runner import Runner
-from .algorithm_publisher import AlgorithmPublisher
 from repository.instance_repository import InstanceRepository
 
 
@@ -15,12 +14,11 @@ class InstanceConsumer(Consumer):
 
     def __consume_instance(self, data):
         data_json = json.loads(data)
+
         instance_data = InstanceRepository.download_instance_file(data_json["file_id"])
+        socket_id = data_json["socket_id"]
 
         print(f"[x] Instance data {instance_data}", flush=True)
 
-        metrics = Runner().run_and_get_metrics(instance_data)
-
-        data_json["metrics"] = metrics
-
-        AlgorithmPublisher().send(json.dumps(data_json))
+        runner = Runner(socket_id, "algorithm")
+        runner.run(instance_data)

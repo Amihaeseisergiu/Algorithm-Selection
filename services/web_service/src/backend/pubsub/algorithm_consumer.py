@@ -12,6 +12,8 @@ class AlgorithmConsumer(Consumer):
     def __consume_algorithm(self, data):
         print(f"[x] Received algorithm response {data}", flush=True)
 
-        json_data = json.loads(data)
+        data_json = json.loads(data)
+        socket_id = data_json["header"]["socket_id"]
+        event_name = data_json["header"]["event_name"]
 
-        self.socketio.emit("receive_algorithm_response", json_data, to=json_data["socket_id"])
+        self.socketio.emit(event_name, data_json, to=socket_id)
