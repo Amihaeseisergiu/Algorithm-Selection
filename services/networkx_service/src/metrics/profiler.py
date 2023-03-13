@@ -28,7 +28,7 @@ class Profiler:
 
     def __emit_metrics(self, emit_state):
         current_memory = (self.get_memory() - self.initial_memory) / (1024 ** 2)
-        current_cpu = self.get_cpu() - self.initial_cpu
+        current_cpu = self.get_cpu()
 
         metrics = {
             "memory": current_memory,
@@ -45,9 +45,6 @@ class Profiler:
         AlgorithmPublisher().send(json.dumps(envelope))
 
     def __monitor(self):
-        self.__emit_metrics("start")
-        time.sleep(0.1)
-
         while not self.stopped:
             self.__emit_metrics("intermediate")
             time.sleep(0.1)

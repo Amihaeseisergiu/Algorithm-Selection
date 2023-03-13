@@ -9,6 +9,9 @@ from resources.download import Download
 from sockets.register import Register
 from sockets.send_instance import SendInstance
 from pubsub.algorithm_consumer import AlgorithmConsumer
+from engineio.payload import Payload
+
+Payload.max_decode_packets = 1000
 
 app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
 socketio = SocketIO(app, async_mode='eventlet')

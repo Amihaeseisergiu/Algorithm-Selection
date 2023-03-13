@@ -2,7 +2,7 @@ import time
 from metrics.profiler import Profiler
 
 
-class Runner:
+class AlgorithmRunner:
     def __init__(self, socket_id, algorithm_name):
         self.algorithm_name = algorithm_name
         self.profiler = Profiler(socket_id, algorithm_name)

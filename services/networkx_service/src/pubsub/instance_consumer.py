@@ -1,7 +1,7 @@
 import os
 import json
 from .consumer import Consumer
-from algorithm.runner import Runner
+from algorithm.scheduler import AlgorithmScheduler
 from repository.instance_repository import InstanceRepository
 
 
@@ -17,8 +17,9 @@ class InstanceConsumer(Consumer):
 
         instance_data = InstanceRepository.download_instance_file(data_json["file_id"])
         socket_id = data_json["socket_id"]
+        algorithm_type = data_json["algorithm_type"]
 
         print(f"[x] Instance data {instance_data}", flush=True)
 
-        runner = Runner(socket_id, "algorithm")
-        runner.run(instance_data)
+        scheduler = AlgorithmScheduler(socket_id, algorithm_type)
+        scheduler.schedule(data)

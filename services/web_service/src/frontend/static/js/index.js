@@ -1,64 +1,67 @@
-import { get, click } from "./utils/dom.js";
+import { get, getData, click, changed } from "./utils/dom.js";
 import { upload } from "./utils/ajax.js";
-import { addPlotTimeData, createAlgorithmPlots } from "./utils/chart.js";
-import { createLibraryHTML } from "./components/metrics.js";
+import { plotMetrics } from "./utils/chart.js";
+import { addAlgorithmsMetricsHTML, addLibraryMetricsHTML } from "./components/metrics.js";
 
-let socket = io();
-let id = null;
+window.App = {};
+App.socket = io();
 
-socket.on('connect', function() {
-    console.log('Socket id: ' + socket.id);
-    socket.emit('register');
+App.socket.on('connect', function() {
+    console.log('Socket id: ' + App.socket.id);
+    App.socket.emit('register');
 });
 
-socket.on("register", (data, acknowledge) => {
+App.socket.on("register", (data, acknowledge) => {
     console.log(data);
-    id = data['id'];
 
-    if (acknowledge) {
-        acknowledge();
-    }
+    acknowledge();
 });
 
-let sendInstanceButton = get('send-instance-button');
-let instanceFileInput = get('instance-file-input');
-
-click(sendInstanceButton, (e) => {
-    let fileData = instanceFileInput.files[0]
+click(get("send-instance-button"), () => {
+    let fileData = get('upload-instance-input').files[0];
+    let algorithmType = getData("instance-metadata", "algorithmType");
 
     upload(fileData, 'http://localhost:5000/upload', (fileId) => {
        console.log("Uploaded file uuid: ", fileId);
 
-       socket.emit(
+       App.socket.emit(
             'send_instance',
             {
-                "socket_id": socket.id,
-                "file_id": fileId
+                "socket_id": App.socket.id,
+                "file_id": fileId,
+                "algorithm_type": algorithmType
             }
         );
     });
 });
 
-socket.on("metric_emit", (data, acknowledge) => {
+click(get('upload-instance-button'), () => {
+    get("upload-instance-input").click();
+});
+
+changed(get('upload-instance-input'), () => {
+    let fileData = get('upload-instance-input').files[0];
+    get('upload-instance-button').value = `Selected ${fileData.name}`;
+});
+
+App.socket.on("library_emit", (data) => {
+    let libraryName = data["header"]["library_name"];
+    get(`${libraryName}-spinner`).remove();
+});
+
+App.socket.on("metric_emit", (data) => {
     let emitState = data["payload"]["emit_state"];
     let libraryName = data["header"]["library_name"];
+    let algorithmName = data["payload"]["algorithm_name"];
 
-    if (emitState === "start") {
-        let librariesElement = get("libraries");
+    if (emitState === "intermediate") {
+        addLibraryMetricsHTML(libraryName);
+        addAlgorithmsMetricsHTML(libraryName, algorithmName);
 
-        let newLibraryElement = createLibraryHTML(libraryName);
-        librariesElement.appendChild(newLibraryElement);
-
-        createAlgorithmPlots(libraryName);
-    } else if (emitState === "intermediate") {
         let metrics = data["payload"]["metrics"];
 
-        let memoryPlot = window[`${libraryName}-memory-plot`];
-        let cpuPlot = window[`${libraryName}-cpu-plot`];
-
-        addPlotTimeData(memoryPlot, metrics["memory"]);
-        addPlotTimeData(cpuPlot, metrics["cpu"]);
+        plotMetrics(libraryName, algorithmName, metrics);
     } else if (emitState === "end") {
-        get(`${libraryName}-spinner`).remove();
+        get(`${libraryName}-${algorithmName}-spinner`).remove();
     }
 });

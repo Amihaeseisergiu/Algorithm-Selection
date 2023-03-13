@@ -5,7 +5,11 @@ module.exports = {
     "./src/frontend/static/**/*.js",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'monda': ['Monda', 'sans-serif']
+      },
+    },
   },
   plugins: [],
 }
