@@ -1,6 +1,5 @@
 import os
 import json
-import time
 import psutil
 from threading import Thread
 from pubsub.algorithm_publisher import AlgorithmPublisher
@@ -8,9 +7,10 @@ from network.envelope import Envelope
 
 
 class Profiler:
-    def __init__(self, socket_id, algorithm_name):
+    def __init__(self, socket_id, algorithm_name, interval=0.001):
         self.socket_id = socket_id
         self.algorithm_name = algorithm_name
+        self.interval = interval
         self.stopped = None
 
         self.initial_memory = None
@@ -24,7 +24,7 @@ class Profiler:
 
     def get_cpu(self):
         process = psutil.Process(os.getpid())
-        return process.cpu_percent()
+        return process.cpu_percent(interval=self.interval)
 
     def __emit_metrics(self, emit_state):
         current_memory = (self.get_memory() - self.initial_memory) / (1024 ** 2)
@@ -42,12 +42,12 @@ class Profiler:
             "metrics": metrics
         }
 
-        AlgorithmPublisher().send(json.dumps(envelope))
+        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope), self.emitted_data_points / 10)
 
     def __monitor(self):
         while not self.stopped:
             self.__emit_metrics("intermediate")
-            time.sleep(0.1)
+            # time.sleep(self.interval) # cpu_percent is blocking
             self.emitted_data_points += 1
 
         self.__emit_metrics("end")
@@ -63,4 +63,3 @@ class Profiler:
 
     def stop(self):
         self.stopped = True
-

@@ -1,11 +1,15 @@
 import pika
+from threading import Thread
 from security.credentials import CredentialsProvider
 
 
 class Consumer:
-    def __init__(self, topic, queue, exclusive, auto_delete, durable, message_processor, socketio):
+    def __init__(self, topic, exchange_type, queue, routing_key, exclusive, auto_delete, durable, message_processor,
+                 socketio):
         self.topic = topic
+        self.exchange_type = exchange_type
         self.queue = queue
+        self.routing_key = routing_key
         self.exclusive = exclusive
         self.auto_delete = auto_delete
         self.durable = durable
@@ -24,17 +28,18 @@ class Consumer:
 
         channel = connection.channel()
         channel.basic_qos(prefetch_count=1)
-        channel.exchange_declare(exchange=self.topic, exchange_type='fanout')
+        channel.exchange_declare(exchange=self.topic, exchange_type=self.exchange_type)
         result = channel.queue_declare(queue=self.queue, exclusive=self.exclusive, auto_delete=self.auto_delete,
                                        durable=self.durable)
 
         channel.queue_bind(queue=result.method.queue,
                            exchange=self.topic,
-                           routing_key="")
+                           routing_key=self.routing_key)
         channel.basic_consume(on_message_callback=self.__message_callback,
                               queue=result.method.queue, auto_ack=False)
 
         channel.start_consuming()
 
     def consume(self):
-        self.socketio.start_background_task(target=self.__consume_callback)
+        thread = Thread(target=self.__consume_callback)
+        thread.start()

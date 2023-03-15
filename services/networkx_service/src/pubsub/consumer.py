@@ -4,8 +4,9 @@ from security.credentials import CredentialsProvider
 
 
 class Consumer:
-    def __init__(self, topic, queue, exclusive, auto_delete, durable, message_processor):
+    def __init__(self, topic, exchange_type, queue, exclusive, auto_delete, durable, message_processor):
         self.topic = topic
+        self.exchange_type = exchange_type
         self.queue = queue
         self.exclusive = exclusive
         self.auto_delete = auto_delete

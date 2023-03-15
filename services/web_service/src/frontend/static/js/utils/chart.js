@@ -57,7 +57,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Time (ds)',
+                                text: 'Time (ms)',
                                 font: {
                                     size: 20
                                 }
@@ -97,7 +97,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Time (ds)',
+                                text: 'Time (ms)',
                                 font: {
                                     size: 20
                                 }

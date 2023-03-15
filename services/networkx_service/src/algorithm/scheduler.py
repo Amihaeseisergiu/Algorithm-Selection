@@ -1,5 +1,4 @@
 import json
-import time
 from algorithm.runner import AlgorithmRunner
 from network.envelope import Envelope
 from pubsub.algorithm_publisher import AlgorithmPublisher
@@ -16,15 +15,13 @@ class AlgorithmScheduler:
             "emit_state": state,
         }
 
-        AlgorithmPublisher().send(json.dumps(envelope))
+        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
 
     def schedule(self, data):
-        runner = AlgorithmRunner(self.socket_id, "Dijkstra")
-        runner.run(data)
+        algorithm1 = AlgorithmRunner(self.socket_id, "Dijkstra").run(data)
+        algorithm2 = AlgorithmRunner(self.socket_id, "A*").run(data)
 
-        time.sleep(2)
-
-        runner = AlgorithmRunner(self.socket_id, "A*")
-        runner.run(data)
+        algorithm1.join()
+        algorithm2.join()
 
         self.__emit_library_state("end")

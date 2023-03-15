@@ -7,14 +7,7 @@ window.App = {};
 App.socket = io();
 
 App.socket.on('connect', function() {
-    console.log('Socket id: ' + App.socket.id);
-    App.socket.emit('register');
-});
-
-App.socket.on("register", (data, acknowledge) => {
-    console.log(data);
-
-    acknowledge();
+    App.socket.emit('register_socket', App.socket.id);
 });
 
 click(get("send-instance-button"), () => {

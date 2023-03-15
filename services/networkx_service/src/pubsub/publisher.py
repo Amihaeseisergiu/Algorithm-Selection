@@ -5,8 +5,10 @@ from security.credentials import CredentialsProvider
 
 
 class Publisher:
-    def __init__(self, topic):
+    def __init__(self, topic, routing_key, exchange_type):
         self.topic = topic
+        self.routing_key = routing_key
+        self.exchange_type = exchange_type
 
     def __callback(self, data, delay):
         time.sleep(delay)
@@ -15,10 +17,10 @@ class Publisher:
 
         connection = pika.BlockingConnection(parameters)
         channel = connection.channel()
-        channel.exchange_declare(exchange=self.topic, exchange_type='fanout')
+        channel.exchange_declare(exchange=self.topic, exchange_type=self.exchange_type)
         channel.basic_publish(
             exchange=self.topic,
-            routing_key='',
+            routing_key=self.routing_key,
             body=data)
         connection.close()
 

@@ -1,14 +1,14 @@
 import os
+import json
 import eventlet
 from flask_restful import Api
-from flask import Flask
+from flask import Flask, request
 from flask_socketio import SocketIO
 from resources.root import Root
 from resources.upload import Upload
 from resources.download import Download
-from sockets.register import Register
-from sockets.send_instance import SendInstance
 from pubsub.algorithm_consumer import AlgorithmConsumer
+from pubsub.instance_publisher import InstancePublisher
 from engineio.payload import Payload
 
 Payload.max_decode_packets = 1000
@@ -22,13 +22,21 @@ api.add_resource(Root, '/')
 api.add_resource(Upload, '/upload')
 api.add_resource(Download, "/download/<file_id>")
 
-socketio.on_event("register", Register.register)
-socketio.on_event("send_instance", SendInstance.send_instance)
+
+@socketio.on("register_socket")
+def register_socket(socket_id):
+    print(f"Connected {socket_id}", flush=True)
+    AlgorithmConsumer(socketio, socket_id).consume()
+
+
+@socketio.on("send_instance")
+def send_instance(instance_json):
+    print(f'[{request.sid}] Received instance: {json.dumps(instance_json)}', flush=True)
+
+    InstancePublisher().send(json.dumps(instance_json))
 
 
 if __name__ == '__main__':
-    AlgorithmConsumer(socketio).consume()
-
     host = os.environ["FLASK_RUN_HOST"]
     port = int(os.environ["FLASK_RUN_PORT"])
     socketio.run(app=app, debug=True, host=host, port=port, use_reloader=False)
