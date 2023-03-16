@@ -7,7 +7,7 @@ from network.envelope import Envelope
 
 
 class Profiler:
-    def __init__(self, socket_id, algorithm_name, interval=0.001):
+    def __init__(self, socket_id, algorithm_name, interval=0.1):
         self.socket_id = socket_id
         self.algorithm_name = algorithm_name
         self.interval = interval
@@ -42,7 +42,7 @@ class Profiler:
             "metrics": metrics
         }
 
-        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope), self.emitted_data_points / 10)
+        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
 
     def __monitor(self):
         while not self.stopped:

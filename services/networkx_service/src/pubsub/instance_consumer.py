@@ -1,8 +1,8 @@
 import os
 import json
 from threading import Thread
+from scheduler.scheduler_provider import SchedulerProvider
 from .consumer import Consumer
-from algorithm.scheduler import AlgorithmScheduler
 from repository.instance_repository import InstanceRepository
 
 
@@ -17,13 +17,13 @@ class InstanceConsumer(Consumer):
         data_json = json.loads(data)
 
         instance_data = InstanceRepository.download_instance_file(data_json["file_id"])
+        instance_json = json.loads(instance_data)
+
+        algorithm_type = instance_json["algorithm_type"]
         socket_id = data_json["socket_id"]
-        algorithm_type = data_json["algorithm_type"]
 
-        print(f"[x] Instance data {instance_data}, socket_id {socket_id}", flush=True)
-
-        scheduler = AlgorithmScheduler(socket_id, algorithm_type)
-        scheduler.schedule(data)
+        scheduler = SchedulerProvider(socket_id).get(algorithm_type)
+        scheduler.schedule(instance_json)
 
     def __consume(self, data):
         thread = Thread(target=self.__consume_instance, args=(data,))

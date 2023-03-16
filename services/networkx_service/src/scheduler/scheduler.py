@@ -1,13 +1,12 @@
 import json
-from algorithm.runner import AlgorithmRunner
 from network.envelope import Envelope
 from pubsub.algorithm_publisher import AlgorithmPublisher
 
 
 class AlgorithmScheduler:
-    def __init__(self, socket_id, algorithm_type):
+    def __init__(self, socket_id, algorithms):
         self.socket_id = socket_id
-        self.algorithm_type = algorithm_type
+        self.algorithms = algorithms
 
     def __emit_library_state(self, state):
         envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="library_emit")
@@ -18,10 +17,13 @@ class AlgorithmScheduler:
         AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
 
     def schedule(self, data):
-        algorithm1 = AlgorithmRunner(self.socket_id, "Dijkstra").run(data)
-        algorithm2 = AlgorithmRunner(self.socket_id, "A*").run(data)
+        started_threads = []
 
-        algorithm1.join()
-        algorithm2.join()
+        for algorithm in self.algorithms:
+            thread = algorithm.run(data)
+            started_threads.append(thread)
+
+        for thread in started_threads:
+            thread.join()
 
         self.__emit_library_state("end")

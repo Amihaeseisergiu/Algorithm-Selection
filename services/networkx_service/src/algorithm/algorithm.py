@@ -4,17 +4,14 @@ from multiprocessing import Process
 from metrics.profiler import Profiler
 
 
-class AlgorithmRunner:
-    def __init__(self, socket_id, algorithm_name):
+class Algorithm:
+    def __init__(self, socket_id, algorithm_name, runnable_algorithm):
         self.algorithm_name = algorithm_name
         self.profiler = Profiler(socket_id, algorithm_name)
+        self.runnable_algorithm = runnable_algorithm
 
     def __run_algorithm(self, data):
-        memory = []
-        for i in range(10):
-            for j in range(10):
-                math.factorial(i ** 5)
-            memory.append("aaaaaaaaaaaaaaa" * 100000)
+        self.runnable_algorithm(data)
 
     def __run_callback(self, data):
         self.profiler.start()
