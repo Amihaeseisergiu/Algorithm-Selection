@@ -2,3 +2,5 @@
 /docker_data/rabbitmq/log
 **/__pycache__/
 /graph_generator/output
+.DS_Store
+.idea

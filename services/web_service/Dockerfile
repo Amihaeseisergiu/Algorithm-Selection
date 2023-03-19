@@ -9,10 +9,11 @@ RUN npm run css
 
 FROM python:3.10
 
+WORKDIR /app
+COPY . .
+
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
-
-COPY . .
 
 COPY --from=node src/frontend/static/css src/frontend/static/css
 
@@ -23,4 +24,4 @@ ENV RABBITMQ_PASS=pass
 ENV INSTANCES_TOPIC=instances
 ENV ALGORITHMS_TOPIC=algorithms
 
-CMD python3 /src/backend/service.py
+CMD python3 /app/src/backend/service.py

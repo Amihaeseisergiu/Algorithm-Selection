@@ -20,7 +20,7 @@ services:
   web-service:
     build: ./web_service
     volumes:
-      - ./web_service/src:/src
+      - ./web_service/src:/app/src
     ports:
       - 5000:5000
     depends_on:
@@ -31,7 +31,7 @@ services:
   algorithm-selector-service:
     build: ./algorithm_selector
     volumes:
-      - ./algorithm_selector/src:/src
+      - ./algorithm_selector/src:/app/src
     ports:
       - 5001:5000
     depends_on:
@@ -42,9 +42,19 @@ services:
   networkx-service:
     build: ./networkx_service
     volumes:
-      - ./networkx_service/src:/src
+      - ./networkx_service/src:/app/src
     ports:
       - 5002:5000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+  jgrapht-service:
+    build: ./jgrapht_service
+    volumes:
+      - ./jgrapht_service/src:/app/src
+    ports:
+      - 5003:5000
     depends_on:
       rabbitmq:
         condition: service_healthy
