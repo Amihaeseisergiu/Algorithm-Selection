@@ -8,12 +8,8 @@ class AlgorithmScheduler:
         self.socket_id = socket_id
         self.algorithms = algorithms
 
-    def __emit_library_state(self, state):
-        envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="library_emit")
-        envelope["payload"] = {
-            "emit_state": state,
-        }
-
+    def __library_end(self):
+        envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="library_end")
         AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
 
     def schedule(self, data):
@@ -26,4 +22,4 @@ class AlgorithmScheduler:
         for thread in started_threads:
             thread.join()
 
-        self.__emit_library_state("end")
+        self.__library_end()

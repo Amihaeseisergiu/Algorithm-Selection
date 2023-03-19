@@ -1,4 +1,3 @@
-import math
 from threading import Thread
 from multiprocessing import Process
 from metrics.profiler import Profiler
@@ -14,13 +13,12 @@ class Algorithm:
         self.runnable_algorithm(data)
 
     def __run_callback(self, data):
-        self.profiler.start()
-
         process = Process(target=self.__run_algorithm, args=(data,))
-        process.start()
-        process.join()
 
-        self.profiler.stop()
+        process.start()
+        self.profiler.start(process.pid)
+
+        process.join()
 
     def run(self, data):
         thread = Thread(target=self.__run_callback, args=(data,))

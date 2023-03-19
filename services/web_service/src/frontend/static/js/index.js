@@ -37,24 +37,36 @@ changed(get('upload-instance-input'), () => {
     get('upload-instance-button').value = `Selected ${fileData.name}`;
 });
 
-App.socket.on("library_emit", (data) => {
+App.socket.on("library_end", (data) => {
     let libraryName = data["header"]["library_name"];
-    get(`${libraryName}-spinner`).remove();
+    if (get(`${libraryName}-spinner`)) {
+        get(`${libraryName}-spinner`).remove();
+    }
 });
 
 App.socket.on("metric_emit", (data) => {
-    let emitState = data["payload"]["emit_state"];
     let libraryName = data["header"]["library_name"];
     let algorithmName = data["payload"]["algorithm_name"];
 
-    if (emitState === "intermediate") {
-        addLibraryMetricsHTML(libraryName);
-        addAlgorithmsMetricsHTML(libraryName, algorithmName);
+    addLibraryMetricsHTML(libraryName);
+    addAlgorithmsMetricsHTML(libraryName, algorithmName);
 
-        let metrics = data["payload"]["metrics"];
+    let metrics = data["payload"]["metrics"];
+    let time = data["payload"]["time"];
 
-        plotMetrics(libraryName, algorithmName, metrics);
-    } else if (emitState === "end") {
-        get(`${libraryName}-${algorithmName}-spinner`).remove();
-    }
+    plotMetrics(libraryName, algorithmName, metrics);
+    get(`${libraryName}-${algorithmName}-time`).textContent = `${time.toFixed(2)} s`;
+});
+
+App.socket.on("metric_end", (data) => {
+    let libraryName = data["header"]["library_name"];
+    let algorithmName = data["payload"]["algorithm_name"];
+
+    addLibraryMetricsHTML(libraryName);
+    addAlgorithmsMetricsHTML(libraryName, algorithmName);
+
+    let time = data["payload"]["time"];
+
+    get(`${libraryName}-${algorithmName}-spinner`).remove();
+    get(`${libraryName}-${algorithmName}-time`).textContent = `${time.toFixed(2)} s`;
 });

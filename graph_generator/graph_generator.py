@@ -30,4 +30,4 @@ def save_to_file(data, path):
 
 
 if __name__ == '__main__':
-    generate_shortest_path_instance(5000)
+    generate_shortest_path_instance(10)

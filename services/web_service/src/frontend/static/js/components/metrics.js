@@ -79,19 +79,25 @@ export function createAlgorithmMetricsHTML(libraryName, algorithmName) {
     div.innerHTML = `
         <div class="flex flex-col w-full p-4 divide-y-2"
              id="${libraryName}-${algorithmName}-metrics">
-            <div class="flex items-center px-2 pb-2 text-2xl font-semibold text-neutral-500">
-                <div>
-                    ${algorithmName}
+            <div class="flex flex-row justify-between items-center text-2xl font-semibold text-neutral-500">
+                <div class="flex items-center px-2 pb-2">
+                    <div>
+                        ${algorithmName}
+                    </div>
                 </div>
-                <div id="${libraryName}-${algorithmName}-spinner"
-                     class="inline-block h-4 w-4 animate-spin rounded-full ml-2 text-rose-400
-                            border-4 border-solid border-current border-r-transparent
-                            align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                    role="status">
-                    <span class="!absolute !-m-px !h-px !w-px !overflow-hidden
-                                 !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                        Loading...
-                    </span>
+                <div class="flex flex-row items-center justify-center">
+                    <div id="${libraryName}-${algorithmName}-time">
+                    </div>
+                    <div id="${libraryName}-${algorithmName}-spinner"
+                         class="inline-block h-4 w-4 animate-spin rounded-full ml-2 text-rose-400
+                                border-4 border-solid border-current border-r-transparent
+                                align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                        role="status">
+                        <span class="!absolute !-m-px !h-px !w-px !overflow-hidden
+                                     !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                            Loading...
+                        </span>
+                    </div>
                 </div>
             </div>
 

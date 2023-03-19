@@ -8,7 +8,7 @@ class Astar(Algorithm):
 
     def algorithm(self, data):
         graph = nx.node_link_graph(data['graph'])
-        source = data['source']
-        target = data['target']
+        source = data['parameters']['source']
+        target = data['parameters']['target']
 
         nx.astar_path(graph, source, target)
