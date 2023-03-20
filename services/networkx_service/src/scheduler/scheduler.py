@@ -13,13 +13,16 @@ class AlgorithmScheduler:
         AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
 
     def schedule(self, data):
-        started_threads = []
+        threads = []
 
         for algorithm in self.algorithms:
-            thread = algorithm.run(data)
-            started_threads.append(thread)
+            thread = algorithm.create(data)
+            threads.append(thread)
 
-        for thread in started_threads:
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
             thread.join()
 
         self.__library_end()

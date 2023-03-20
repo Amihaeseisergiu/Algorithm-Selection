@@ -1,4 +1,5 @@
 import pika
+import time
 from threading import Thread
 from security.credentials import CredentialsProvider
 
@@ -21,21 +22,38 @@ class Consumer:
     def __consume_callback(self):
         parameters = pika.ConnectionParameters(host='rabbitmq', credentials=CredentialsProvider.get_credentials())
 
-        connection = pika.BlockingConnection(parameters)
+        while True:
+            try:
+                connection = pika.BlockingConnection(parameters)
 
-        channel = connection.channel()
-        channel.basic_qos(prefetch_count=1)
-        channel.exchange_declare(exchange=self.topic, exchange_type=self.exchange_type)
-        result = channel.queue_declare(queue=self.queue, exclusive=self.exclusive, auto_delete=self.auto_delete,
-                                       durable=self.durable)
+                channel = connection.channel()
+                channel.basic_qos(prefetch_count=1)
+                channel.exchange_declare(exchange=self.topic, exchange_type=self.exchange_type)
+                result = channel.queue_declare(queue=self.queue, exclusive=self.exclusive, auto_delete=self.auto_delete,
+                                               durable=self.durable)
 
-        channel.queue_bind(queue=result.method.queue,
-                           exchange=self.topic,
-                           routing_key="")
-        channel.basic_consume(on_message_callback=self.__message_callback,
-                              queue=result.method.queue, auto_ack=False)
+                channel.queue_bind(queue=result.method.queue,
+                                   exchange=self.topic,
+                                   routing_key="")
+                channel.basic_consume(on_message_callback=self.__message_callback,
+                                      queue=result.method.queue, auto_ack=False)
 
-        channel.start_consuming()
+                try:
+                    channel.start_consuming()
+                except KeyboardInterrupt:
+                    channel.stop_consuming()
+                    connection.close()
+                    break
+            except pika.exceptions.ConnectionClosedByBroker:
+                continue
+            except pika.exceptions.AMQPConnectionError:
+                continue
+            except pika.exceptions.AMQPChannelError as err:
+                break
+            except:
+                time.sleep(0.1)
+                continue
+
 
     def consume(self):
         thread = Thread(target=self.__consume_callback)

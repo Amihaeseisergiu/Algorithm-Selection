@@ -20,8 +20,6 @@ class Algorithm:
 
         process.join()
 
-    def run(self, data):
+    def create(self, data):
         thread = Thread(target=self.__run_callback, args=(data,))
-        thread.start()
-
         return thread
