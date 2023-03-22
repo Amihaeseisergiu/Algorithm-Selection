@@ -10,7 +10,7 @@ def generate_shortest_path_instance(n_nodes, weighted=True):
         for (u, v, w) in graph.edges(data=True):
             w['weight'] = random.randint(0, n_nodes - 1)
 
-    node_link_data = nx.node_link_data(graph)
+    node_link_data = nx.node_link_data(graph, link="edges")
 
     instance = {
         "algorithm_type": "shortest_path",
@@ -30,4 +30,4 @@ def save_to_file(data, path):
 
 
 if __name__ == '__main__':
-    generate_shortest_path_instance(10)
+    generate_shortest_path_instance(5000)

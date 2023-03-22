@@ -12,11 +12,11 @@ class AlgorithmScheduler:
         envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="library_end")
         AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
 
-    def schedule(self, data):
+    def schedule(self, instance_path):
         threads = []
 
         for algorithm in self.algorithms:
-            thread = algorithm.create(data)
+            thread = algorithm.create(instance_path)
             threads.append(thread)
 
         for thread in threads:

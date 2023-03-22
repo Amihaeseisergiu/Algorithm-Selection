@@ -1,4 +1,4 @@
-import networkx as nx
+import subprocess
 from algorithm.algorithm import Algorithm
 
 
@@ -6,9 +6,5 @@ class Dijkstra(Algorithm):
     def __init__(self, socket_id):
         super().__init__(socket_id, "Dijkstra", self.algorithm)
 
-    def algorithm(self, data):
-        graph = nx.node_link_graph(data['graph'])
-        source = data['parameters']['source']
-        target = data['parameters']['target']
-
-        nx.dijkstra_path(graph, source, target)
+    def algorithm(self, instance_path):
+        return subprocess.Popen(["python3", "/app/src/process/process.py", instance_path, "dijkstra"])

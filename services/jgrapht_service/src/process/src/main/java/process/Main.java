@@ -1,25 +1,18 @@
 package process;
 
-import java.util.ArrayList;
-import java.util.List;
+import process.algorithm.Algorithm;
+import process.algorithm.Algorithms;
+import process.instance.Instance;
+import process.instance.InstanceRepository;
 
 public class Main {
-    public static long factorial(int number) {
-        long result = 1;
-
-        for (int factor = 2; factor <= number; factor++) {
-            result *= factor;
-        }
-
-        return result;
-    }
-
     public static void main(String[] args) {
-        List<String> stringList = new ArrayList<>();
+        String instancePath = args[0];
+        String algorithmName = args[1];
 
-        for (int i = 0; i < 50; i++) {
-            stringList.add("aaaaaaaaaa".repeat(Math.max(0, 10000)));
-            factorial(100000000);
-        }
+        Instance instance = InstanceRepository.getInstance(instancePath);
+        Algorithm algorithm = Algorithms.getMapping(instance).get(algorithmName);
+
+        algorithm.run();
     }
 }
