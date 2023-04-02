@@ -1,6 +1,8 @@
 package process.instance;
 
-import com.google.gson.JsonObject;
+import com.jsoniter.any.Any;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
 
-public record Instance(Boolean directed, Boolean multiGraph, String graph, JsonObject parameters) {
+public record Instance(Graph<String, DefaultEdge> graph, Any parameters) {
 }

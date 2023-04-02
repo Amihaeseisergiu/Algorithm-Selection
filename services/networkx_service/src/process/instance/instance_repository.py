@@ -1,6 +1,6 @@
 import json
-import networkx as nx
 from .instance import Instance
+from .utils import Utils
 
 
 class InstanceRepository:
@@ -10,8 +10,7 @@ class InstanceRepository:
             data = json.load(f)
             data_json = json.loads(data)
 
-            return Instance(data_json['graph'], data_json['parameters'])
+            graph = Utils.construct_graph(data_json['graph'])
+            parameters = data_json['parameters']
 
-    @staticmethod
-    def get_graph(instance):
-        return nx.node_link_graph(instance.graph, link="edges")
+            return Instance(graph, parameters)

@@ -1,14 +1,14 @@
 import networkx as nx
 from algorithm.algorithm import Algorithm
-from instance.instance_repository import InstanceRepository
+
 
 class BellmanFord(Algorithm):
     def __init__(self, instance):
         super().__init__(instance)
+        self.graph = instance.graph
+        self.source = instance.parameters['source']
+        self.target = instance.parameters['target']
 
     def run(self):
-        graph = InstanceRepository.get_graph(self.instance)
-        source = self.instance.parameters['source']
-        target = self.instance.parameters['target']
-
-        nx.bellman_ford_path(graph, int(source), int(target))
+        path = nx.bellman_ford_path(self.graph, int(self.source), int(self.target))
+        print(f"Bellmanford path length: {len(path)}", flush=True)

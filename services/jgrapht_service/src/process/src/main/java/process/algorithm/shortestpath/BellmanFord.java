@@ -1,26 +1,27 @@
 package process.algorithm.shortestpath;
 
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.BellmanFordShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import process.algorithm.Algorithm;
 import process.instance.Instance;
-import process.instance.InstanceRepository;
 
 public class BellmanFord extends Algorithm {
-
     String source;
     String target;
+    Graph<String, DefaultEdge> graph;
 
     public BellmanFord(Instance instance) {
         super(instance);
-        this.source = instance.parameters().get("source").getAsString();
-        this.target = instance.parameters().get("source").getAsString();
+        this.graph = instance.graph();
+        this.source = instance.parameters().get("source").toString();
+        this.target = instance.parameters().get("target").toString();
     }
 
     public void run() {
-        Graph<String, DefaultEdge> graph = InstanceRepository.getGraph(this.instance);
-        BellmanFordShortestPath<String, DefaultEdge> bellmanFordShortestPath = new BellmanFordShortestPath<>(graph);
-        bellmanFordShortestPath.getPath(this.source, this.target);
+        BellmanFordShortestPath<String, DefaultEdge> bellmanFordShortestPath = new BellmanFordShortestPath<>(this.graph);
+        GraphPath<String, DefaultEdge> path = bellmanFordShortestPath.getPath(this.source, this.target);
+        System.out.println("Bellmanford path length: " + path.getLength());
     }
 }

@@ -1,56 +1,27 @@
 package process.instance;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.builder.GraphTypeBuilder;
-import org.jgrapht.nio.json.JSONImporter;
-import org.jgrapht.util.SupplierUtil;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.StringReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class InstanceRepository {
     public static Instance getInstance(String instancePath) {
         try {
-            Gson gson = new Gson();
-            String content = gson.fromJson(new FileReader(instancePath), String.class);
-            JsonObject root = JsonParser.parseString(content).getAsJsonObject();
+            String jsonString = JsonIterator.deserialize(Files.readString(Paths.get(instancePath))).toString();
+            Any rootJSON = JsonIterator.deserialize(jsonString);
+            Any graphJSON = rootJSON.get("graph");
+            Any parametersJSON = rootJSON.get("parameters");
 
-            JsonObject graph = root.get("graph").getAsJsonObject();
-            JsonObject parameters = root.get("parameters").getAsJsonObject();
+            Graph<String, DefaultEdge> graph = Utils.constructGraph(graphJSON);
 
-            Boolean directed = graph.get("directed").getAsBoolean();
-            Boolean multiGraph = graph.get("multigraph").getAsBoolean();
-
-            return new Instance(directed, multiGraph, graph.toString(), parameters);
-        } catch (FileNotFoundException e) {
-            return new Instance(false, false, "", null);
+            return new Instance(graph, parametersJSON);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-    }
-
-    public static Graph<String, DefaultEdge> getGraph(Instance instance) {
-        Graph<String, DefaultEdge> graph;
-
-        if (instance.directed()) {
-            graph = GraphTypeBuilder
-                    .directed().allowingMultipleEdges(instance.multiGraph()).allowingSelfLoops(instance.multiGraph())
-                    .weighted(true).vertexSupplier(SupplierUtil.createStringSupplier())
-                    .edgeSupplier(SupplierUtil.DEFAULT_EDGE_SUPPLIER).buildGraph();
-        } else {
-            graph = GraphTypeBuilder
-                    .undirected().allowingMultipleEdges(instance.multiGraph()).allowingSelfLoops(instance.multiGraph())
-                    .weighted(true).vertexSupplier(SupplierUtil.createStringSupplier())
-                    .edgeSupplier(SupplierUtil.DEFAULT_EDGE_SUPPLIER).buildGraph();
-        }
-
-        JSONImporter<String, DefaultEdge> importer = new JSONImporter<>();
-        importer.importGraph(graph, new StringReader(instance.graph()));
-
-        return graph;
     }
 }
