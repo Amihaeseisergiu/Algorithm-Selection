@@ -15,6 +15,4 @@ class AlgorithmConsumer(Consumer):
         socket_id = data_json["header"]["socket_id"]
         event_name = data_json["header"]["event_name"]
 
-        print(f"[x] Received algorithm response {data}", flush=True)
-
         self.socketio.emit(event_name, data_json, to=socket_id)

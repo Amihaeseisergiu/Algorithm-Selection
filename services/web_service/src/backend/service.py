@@ -25,14 +25,11 @@ api.add_resource(Download, "/download/<file_id>")
 
 @socketio.on("register_socket")
 def register_socket(socket_id):
-    print(f"Connected {socket_id}", flush=True)
     AlgorithmConsumer(socketio, socket_id).consume()
 
 
 @socketio.on("send_instance")
 def send_instance(instance_json):
-    print(f'[{request.sid}] Received instance: {json.dumps(instance_json)}', flush=True)
-
     InstancePublisher().send(json.dumps(instance_json))
 
 

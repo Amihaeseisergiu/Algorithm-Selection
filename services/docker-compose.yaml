@@ -59,3 +59,13 @@ services:
       rabbitmq:
         condition: service_healthy
     restart: on-failure
+  graph4j-service:
+    build: ./graph4j_service
+    volumes:
+      - ./graph4j_service/src:/app/src
+    ports:
+      - 5004:5000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure

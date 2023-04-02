@@ -12,6 +12,4 @@ class Upload(Resource):
         os.makedirs("../files", exist_ok=True)
         file.save(f"../files/{file_uuid}")
 
-        print(f"[x] Uploaded file {file.filename}", flush=True)
-
         return file_uuid, 200

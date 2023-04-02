@@ -1,5 +1,8 @@
-FROM arm64v8/maven:3.9.0-amazoncorretto-19 AS build
+FROM arm64v8/maven:3.8-amazoncorretto-19 AS build
 COPY /src/process /process
+
+RUN mvn install:install-file -Dfile=/process/dependencies/graph4j-1.0.1.jar -DgroupId=org.graph4j -DartifactId=graph4j \
+     -Dversion=1.0.1 -Dpackaging=jar
 RUN mvn -f /process/pom.xml compile assembly:single
 
 FROM python:3.10
@@ -20,8 +23,8 @@ ENV RABBITMQ_USER=user
 ENV RABBITMQ_PASS=pass
 ENV WEB_SERVICE_NAME=web-service
 ENV INSTANCES_TOPIC=instances
-ENV INSTANCES_QUEUE=jgrapht_instances
+ENV INSTANCES_QUEUE=graph4j_instances
 ENV ALGORITHMS_TOPIC=algorithms
-ENV LIBRARY_NAME=JGraphT
+ENV LIBRARY_NAME=Graph4J
 
 CMD python3 /app/src/service.py

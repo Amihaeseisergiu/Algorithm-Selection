@@ -13,5 +13,6 @@ ENV WEB_SERVICE_NAME=web-service
 ENV INSTANCES_TOPIC=instances
 ENV INSTANCES_QUEUE=networkx_instances
 ENV ALGORITHMS_TOPIC=algorithms
+ENV LIBRARY_NAME=NetworkX
 
 CMD python3 /app/src/service.py
