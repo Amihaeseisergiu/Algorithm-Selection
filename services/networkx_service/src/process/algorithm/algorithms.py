@@ -5,9 +5,9 @@ from .shortest_path.dijkstra import Dijkstra
 
 class Algorithms:
     @staticmethod
-    def get_mapping(instance):
+    def get_mapping(instance, algorithm_name, file_id):
         return {
-            "dijkstra": Dijkstra(instance),
-            "bellmanford": BellmanFord(instance),
-            "astar": AStar(instance)
+            "Dijkstra": Dijkstra(instance, algorithm_name, file_id),
+            "Bellman-Ford": BellmanFord(instance, algorithm_name, file_id),
+            "A*": AStar(instance, algorithm_name, file_id)
         }

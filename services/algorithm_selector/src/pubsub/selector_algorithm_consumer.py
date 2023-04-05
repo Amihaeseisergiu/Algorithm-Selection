@@ -2,11 +2,10 @@ import os
 from .consumer import Consumer
 
 
-class AlgorithmConsumer(Consumer):
+class SelectorAlgorithmConsumer(Consumer):
     def __init__(self):
-        algorithms_topic = os.environ["ALGORITHMS_TOPIC"]
-        algorithms_queue = os.environ["ALGORITHMS_QUEUE"]
-        super().__init__(topic=algorithms_topic, exchange_type='direct', queue=algorithms_queue, exclusive=False,
+        selector_algorithms_topic = os.environ["SELECTOR_ALGORITHMS_TOPIC"]
+        super().__init__(topic=selector_algorithms_topic, exchange_type='fanout', queue='', exclusive=True,
                          auto_delete=False, durable=True, message_processor=self.__consume_algorithm)
 
     def __consume_algorithm(self, data):

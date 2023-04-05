@@ -3,13 +3,15 @@ import json
 import psutil
 import multiprocessing
 from threading import Thread
-from pubsub.algorithm_publisher import AlgorithmPublisher
+from pubsub.user_metric_publisher import UserMetricPublisher
+from pubsub.selector_metric_publisher import SelectorMetricPublisher
 from network.envelope import Envelope
 
 
 class Profiler:
-    def __init__(self, socket_id, algorithm_name, interval=0.1):
+    def __init__(self, socket_id, file_id, algorithm_name, interval=0.1):
         self.socket_id = socket_id
+        self.file_id = file_id
         self.algorithm_name = algorithm_name
         self.interval = interval
 
@@ -45,7 +47,7 @@ class Profiler:
         else:
             self.last_memory = current_memory
 
-        if current_cpu < 0:
+        if current_cpu < 0 or current_cpu > 100:
             current_cpu = self.last_cpu
         else:
             self.last_cpu = current_cpu
@@ -67,24 +69,37 @@ class Profiler:
             "time": current_time
         }
 
-        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
+        UserMetricPublisher(self.socket_id).send(json.dumps(envelope))
 
     def __end_metrics(self):
-        metrics = {
+        user_metrics = {
             "memory": self.max_memory,
             "cpu": self.max_cpu,
         }
 
         current_time = self.get_time()
 
-        envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="metric_end")
-        envelope["payload"] = {
+        end_envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="metric_end")
+        end_envelope["payload"] = {
             "algorithm_name": self.algorithm_name,
-            "metrics": metrics,
+            "metrics": user_metrics,
             "time": current_time
         }
 
-        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
+        UserMetricPublisher(self.socket_id).send(json.dumps(end_envelope))
+
+        selector_metrics = {
+            "max_memory": self.max_memory,
+            "max_cpu": self.max_cpu,
+            "time": current_time
+        }
+
+        selector_envelope = Envelope.create_selector_envelope(file_id=self.file_id, algorithm_name=self.algorithm_name)
+        selector_envelope["payload"] = {
+            "metrics": selector_metrics
+        }
+
+        SelectorMetricPublisher().send(json.dumps(selector_envelope))
 
     def __monitor(self):
         while not self.stopped:

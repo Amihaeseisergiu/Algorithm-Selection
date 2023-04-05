@@ -1,7 +1,7 @@
 services:
   rabbitmq:
     image: rabbitmq:3.11.9-management-alpine
-    container_name: 'rabbitmq'
+    container_name: rabbitmq
     ports:
       - 5672:5672
       - 15672:15672
@@ -16,6 +16,20 @@ services:
       interval: 4s
       timeout: 20s
       retries: 3
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: unless-stopped
+    command: mongod --auth
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_DATABASE=algorithms
+      - MONGODB_DATA_DIR=/data/db
+      - MONGODB_LOG_DIR=/dev/null
+    volumes:
+      - ../docker_data/mongodb:/data/db
 
   web-service:
     build: ./web_service

@@ -22,6 +22,6 @@ ENV FLASK_RUN_PORT=5000
 ENV RABBITMQ_USER=user
 ENV RABBITMQ_PASS=pass
 ENV INSTANCES_TOPIC=instances
-ENV ALGORITHMS_TOPIC=algorithms
+ENV USER_METRICS_TOPIC=user_metrics
 
 CMD python3 /app/src/backend/service.py

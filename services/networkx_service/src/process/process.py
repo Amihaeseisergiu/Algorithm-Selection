@@ -8,7 +8,8 @@ if __name__ == "__main__":
 
     instance_path = parameters[0]
     algorithm_name = parameters[1]
+    file_id = parameters[2]
 
     instance = InstanceRepository.get_instance(instance_path)
-    algorithm = Algorithms.get_mapping(instance)[algorithm_name]
+    algorithm = Algorithms.get_mapping(instance, algorithm_name, file_id)[algorithm_name]
     algorithm.run()

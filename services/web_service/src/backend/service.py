@@ -2,12 +2,12 @@ import os
 import json
 import eventlet
 from flask_restful import Api
-from flask import Flask, request
+from flask import Flask
 from flask_socketio import SocketIO
 from resources.root import Root
 from resources.upload import Upload
 from resources.download import Download
-from pubsub.algorithm_consumer import AlgorithmConsumer
+from pubsub.user_metric_consumer import UserMetricConsumer
 from pubsub.instance_publisher import InstancePublisher
 from engineio.payload import Payload
 
@@ -25,7 +25,7 @@ api.add_resource(Download, "/download/<file_id>")
 
 @socketio.on("register_socket")
 def register_socket(socket_id):
-    AlgorithmConsumer(socketio, socket_id).consume()
+    UserMetricConsumer(socketio, socket_id).consume()
 
 
 @socketio.on("send_instance")

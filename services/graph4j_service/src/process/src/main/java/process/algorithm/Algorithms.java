@@ -12,9 +12,9 @@ public class Algorithms {
 
     public static Map<String, Algorithm> getMapping(Instance instance) {
         return Map.ofEntries(
-                entry("dijkstra", new Dijkstra(instance)),
-                entry("floydwarshall", new FloydWarshall(instance)),
-                entry("bellmanford", new BellmanFord(instance))
+                entry("Dijkstra", new Dijkstra(instance)),
+                entry("Floyd-Warshall", new FloydWarshall(instance)),
+                entry("Bellman-Ford", new BellmanFord(instance))
         );
     }
 }

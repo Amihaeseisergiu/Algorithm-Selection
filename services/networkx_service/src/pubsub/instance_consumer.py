@@ -16,10 +16,11 @@ class InstanceConsumer(Consumer):
     def __consume_instance(self, data):
         data_json = json.loads(data)
         socket_id = data_json["socket_id"]
+        file_id = data_json["file_id"]
 
-        algorithm_type, instance_path = InstanceRepository.download_instance_file(data_json["file_id"])
+        algorithm_type, instance_path = InstanceRepository.download_instance_file(file_id)
 
-        scheduler = SchedulerProvider(socket_id).get(algorithm_type)
+        scheduler = SchedulerProvider(socket_id, file_id).get(algorithm_type)
         scheduler.schedule(instance_path)
 
     def __consume(self, data):

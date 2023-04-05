@@ -3,9 +3,10 @@ from metrics.profiler import Profiler
 
 
 class Algorithm:
-    def __init__(self, socket_id, algorithm_name, runnable_algorithm):
+    def __init__(self, socket_id, file_id, algorithm_name, runnable_algorithm):
+        self.file_id = file_id
         self.algorithm_name = algorithm_name
-        self.profiler = Profiler(socket_id, algorithm_name)
+        self.profiler = Profiler(socket_id, file_id, algorithm_name)
         self.runnable_algorithm = runnable_algorithm
 
     def __run_algorithm(self, instance_path):

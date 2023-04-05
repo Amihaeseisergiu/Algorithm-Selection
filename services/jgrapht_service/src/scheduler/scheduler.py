@@ -1,6 +1,6 @@
 import json
 from network.envelope import Envelope
-from pubsub.algorithm_publisher import AlgorithmPublisher
+from pubsub.user_metric_publisher import UserMetricPublisher
 
 
 class AlgorithmScheduler:
@@ -10,7 +10,7 @@ class AlgorithmScheduler:
 
     def __library_end(self):
         envelope = Envelope.create_end_user_envelope(socket_id=self.socket_id, event_name="library_end")
-        AlgorithmPublisher(self.socket_id).send(json.dumps(envelope))
+        UserMetricPublisher(self.socket_id).send(json.dumps(envelope))
 
     def schedule(self, instance_path):
         threads = []

@@ -3,8 +3,8 @@ from algorithm.algorithm import Algorithm
 
 
 class Dijkstra(Algorithm):
-    def __init__(self, instance):
-        super().__init__(instance)
+    def __init__(self, instance, algorithm_name, file_id):
+        super().__init__(instance, algorithm_name, file_id)
         self.graph = instance.graph
         self.source = instance.parameters['source']
         self.target = instance.parameters['target']
