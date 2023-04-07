@@ -4,6 +4,7 @@ from metrics.profiler import Profiler
 
 class Algorithm:
     def __init__(self, socket_id, file_id, algorithm_name, runnable_algorithm):
+        self.socket_id = socket_id
         self.file_id = file_id
         self.algorithm_name = algorithm_name
         self.profiler = Profiler(socket_id, file_id, algorithm_name)

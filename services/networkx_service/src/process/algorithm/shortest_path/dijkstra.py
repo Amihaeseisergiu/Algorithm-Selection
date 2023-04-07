@@ -3,12 +3,12 @@ from algorithm.algorithm import Algorithm
 
 
 class Dijkstra(Algorithm):
-    def __init__(self, instance, algorithm_name, file_id):
-        super().__init__(instance, algorithm_name, file_id)
-        self.graph = instance.graph
-        self.source = instance.parameters['source']
-        self.target = instance.parameters['target']
+    def __init__(self, instance, publishers):
+        super().__init__(instance, publishers)
+        self.source = self.parameters['source']
+        self.target = self.parameters['target']
 
-    def run(self):
+    def algorithm(self):
         path = nx.dijkstra_path(self.graph, int(self.source), int(self.target))
-        print(f"Dijkstra path length: {len(path)}", flush=True)
+
+        return len(path) - 1

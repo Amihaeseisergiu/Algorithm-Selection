@@ -3,7 +3,7 @@ import os
 
 class Envelope:
     @staticmethod
-    def create_selector_envelope(file_id, algorithm_name):
+    def create_selector_envelope(file_id, algorithm_name, result):
         library_name = os.environ["LIBRARY_NAME"]
 
         return {
@@ -12,5 +12,7 @@ class Envelope:
                 "algorithm_name": algorithm_name,
                 "library_name": library_name
             },
-            "payload": {}
+            "payload": {
+                "result": result
+            }
         }

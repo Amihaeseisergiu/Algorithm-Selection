@@ -26,4 +26,7 @@ ENV USER_METRICS_TOPIC=user_metrics
 ENV SELECTOR_METRICS_TOPIC=selector_metrics
 ENV LIBRARY_NAME=JGraphT
 
+# Process variables
+ENV SELECTOR_ALGORITHMS_TOPIC=selector_algorithms
+
 CMD python3 /app/src/service.py

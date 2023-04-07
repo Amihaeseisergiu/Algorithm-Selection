@@ -10,4 +10,4 @@ class Dijkstra(Algorithm):
 
     def algorithm(self, instance_path):
         return subprocess.Popen(["java", "-jar", "-Xmx8192m", "/process/process.jar",
-                                 instance_path, self.algorithm_name, self.file_id])
+                                 instance_path, self.algorithm_name, self.file_id, self.socket_id])

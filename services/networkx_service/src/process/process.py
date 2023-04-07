@@ -2,6 +2,7 @@ import sys
 
 from algorithm.algorithms import Algorithms
 from instance.instance_repository import InstanceRepository
+from pubsub.selector_algorithm_publisher import SelectorAlgorithmPublisher
 
 if __name__ == "__main__":
     parameters = sys.argv[1:]
@@ -9,7 +10,12 @@ if __name__ == "__main__":
     instance_path = parameters[0]
     algorithm_name = parameters[1]
     file_id = parameters[2]
+    socket_id = parameters[3]
+
+    algorithmPublishers = [
+        SelectorAlgorithmPublisher(file_id, algorithm_name)
+    ]
 
     instance = InstanceRepository.get_instance(instance_path)
-    algorithm = Algorithms.get_mapping(instance, algorithm_name, file_id)[algorithm_name]
+    algorithm = Algorithms.get_mapping(instance, algorithmPublishers)[algorithm_name]
     algorithm.run()
