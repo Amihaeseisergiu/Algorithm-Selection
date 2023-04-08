@@ -17,3 +17,9 @@ export function getData(element, data) {
 
     return undefined;
 }
+
+export function setData(element, key, value) {
+    if (get(element)._x_dataStack) {
+        get(element)._x_dataStack[0][key] = value;
+    }
+}

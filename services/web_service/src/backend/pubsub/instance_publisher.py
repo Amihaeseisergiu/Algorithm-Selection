@@ -3,6 +3,6 @@ from .publisher import Publisher
 
 
 class InstancePublisher(Publisher):
-    def __init__(self):
-        instances_topic = os.environ["INSTANCES_TOPIC"]
-        super().__init__(instances_topic, 'fanout')
+    def __init__(self, routing_key):
+        topic = os.environ["INSTANCES_TOPIC"]
+        super().__init__(topic, routing_key, 'topic')

@@ -9,6 +9,7 @@ from resources.upload import Upload
 from resources.download import Download
 from pubsub.user_metric_consumer import UserMetricConsumer
 from pubsub.instance_publisher import InstancePublisher
+from pubsub.next_library_consumer import NextLibraryConsumer
 from engineio.payload import Payload
 
 Payload.max_decode_packets = 1000
@@ -26,11 +27,34 @@ api.add_resource(Download, "/download/<file_id>")
 @socketio.on("register_socket")
 def register_socket(socket_id):
     UserMetricConsumer(socketio, socket_id).consume()
+    NextLibraryConsumer(socket_id).consume()
 
 
 @socketio.on("send_instance")
 def send_instance(instance_json):
-    InstancePublisher().send(json.dumps(instance_json))
+    mode = instance_json['mode']
+    socker_id = instance_json['socket_id']
+
+    if mode == 'parallel':
+        InstancePublisher('instances.parallel').send(json.dumps(instance_json))
+    elif mode == 'sequential':
+        available_libraries = os.environ["LIBRARY_NAMES"].split(',')
+
+        for library_name in available_libraries:
+            schedule_data = {
+                "header": {
+                    "library_name": library_name
+                }
+            }
+            socketio.emit("schedule", schedule_data, to=socker_id)
+
+        first_library = os.environ["SEQUENTIAL_LIBRARY_NAMES"].split(',')[0]
+        routing_key = f"{os.environ['INSTANCES_SEQUENTIAL_KEY_PREFIX']}.{first_library}"
+        instance_json['current_library'] = 0
+
+        InstancePublisher(routing_key).send(json.dumps(instance_json))
+    else:
+        raise NotImplementedError("Unknown mode provided")
 
 
 if __name__ == '__main__':

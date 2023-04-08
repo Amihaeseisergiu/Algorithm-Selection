@@ -27,7 +27,23 @@
                         Algorithm Selection
                     </div>
                 </div>
-                <div id="instance-metadata" class="w-full p-4" x-data="{algorithmType: 'Select algorithm type', test: ''}">
+                <div id="instance-metadata" class="w-full p-4" x-data="{algorithmType: 'Select algorithm type', mode: 0}">
+                    <div class="w-full font-semibold rounded-2xl border-2 border-solid border-gray-300 shadow
+                               text-neutral-400 my-2 cursor-pointer duration-500 flex flex-row divide-x-2
+                               hover:scale-[1.02] shadow hover:shadow-xl">
+                        <div class="w-1/2 h-full text-center p-2 rounded-l-2xl scale-[1.008]"
+                             :class="mode === 0 ? 'bg-rose-400 text-white border-rose-400' : ''"
+                             @click="mode = (mode + 1) % 2">
+                            Sequential
+                        </div>
+
+                        <div class="w-1/2 h-full text-center p-2 rounded-r-2xl scale-[1.008]"
+                             :class="mode === 1 ? 'bg-rose-400 text-white border-rose-400' : ''"
+                             @click="mode = (mode + 1) % 2">
+                            Parallel
+                        </div>
+                    </div>
+
                     <input type="button" id="upload-instance-button"
                                class="w-full font-semibold rounded-2xl border-2 border-solid border-gray-300
                                text-neutral-400 py-2 px-4 my-2 cursor-pointer duration-500 hover:border-rose-400
@@ -90,6 +106,10 @@
         </div>
 
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"
+            integrity="sha512-RX/OFugt/bkgwRQg4B22KYE79dQhwaPp2IZaA/YyU3GMo/qY7GrXkiG6Dvvwnds6/DefCfwPTgCXnaC6nAgVYw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 <script type="module" charset="utf-8" src="../static/js/index.js"></script>

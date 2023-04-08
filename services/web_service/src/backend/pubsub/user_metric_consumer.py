@@ -4,8 +4,9 @@ from .consumer import Consumer
 
 
 class UserMetricConsumer(Consumer):
-    def __init__(self, socketio, routing_key):
+    def __init__(self, socketio, socket_id):
         user_metrics_topic = os.environ["USER_METRICS_TOPIC"]
+        routing_key = f"{socket_id}_user_metric"
         super().__init__(topic=user_metrics_topic, exchange_type='direct', queue=routing_key, routing_key=routing_key,
                          auto_delete=True, durable=False, exclusive=True, message_processor=self.__consume_metric,
                          socketio=socketio)

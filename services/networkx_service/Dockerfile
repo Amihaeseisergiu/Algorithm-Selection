@@ -12,8 +12,12 @@ ENV RABBITMQ_USER=user
 ENV RABBITMQ_PASS=pass
 ENV WEB_SERVICE_NAME=web-service
 ENV INSTANCES_TOPIC=instances
-ENV INSTANCES_QUEUE=networkx_instances
+ENV INSTANCES_PARALLEL_QUEUE=networkx_instances_parallel
+ENV INSTANCES_PARALLEL_KEY=instances.parallel
+ENV INSTANCES_SEQUENTIAL_QUEUE=networkx_instances_sequential
+ENV INSTANCES_SEQUENTIAL_KEY=instances.sequential.networkx
 ENV USER_METRICS_TOPIC=user_metrics
+ENV NEXT_LIBRARY_TOPIC=next_library
 ENV SELECTOR_METRICS_TOPIC=selector_metrics
 ENV LIBRARY_NAME=NetworkX
 

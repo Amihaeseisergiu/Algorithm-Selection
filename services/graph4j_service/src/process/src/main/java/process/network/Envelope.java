@@ -3,11 +3,7 @@ package process.network;
 import org.json.JSONObject;
 
 public class Envelope {
-    private static final String libraryName;
-
-    static {
-        libraryName = System.getenv("LIBRARY_NAME");
-    }
+    private static final String libraryName = System.getenv("LIBRARY_NAME");
 
     public static String createSelectorEnvelope(String fileId, String algorithmName, String result) {
         return new JSONObject()
