@@ -1,6 +1,6 @@
 import {get} from "../utils/dom.js";
 import {addAlgorithmsMetricsHTML, addLibraryMetricsHTML} from "../components/metrics.js";
-import {plotMetrics} from "../utils/chart.js";
+import {plotMetrics, createPlotsVerticalLine} from "../utils/chart.js";
 
 export function initializeApp() {
     window.App = {};
@@ -57,5 +57,14 @@ export function initializeApp() {
             get(`${libraryName}-${algorithmName}-spinner`).remove();
             get(`${libraryName}-${algorithmName}-time`).textContent = `${time.toFixed(2)} s`;
         }
+    });
+
+    App.socket.on("init_time", (data) => {
+        let libraryName = data["header"]["library_name"];
+        let algorithmName = data["header"]["algorithm_name"];
+        let init_time = parseFloat(data["payload"]["init_time_end"]);
+
+        createPlotsVerticalLine(libraryName, algorithmName, "Initialization");
+        get(`${libraryName}-${algorithmName}-init-time`).innerText = `- initialized in ${init_time.toFixed(2)} s`;
     });
 }

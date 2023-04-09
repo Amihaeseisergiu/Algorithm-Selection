@@ -11,5 +11,5 @@ class SelectorAlgorithmPublisher(Publisher):
         self.algorithm_name = algorithm_name
 
     def send(self, result):
-        envelope = Envelope.create_selector_envelope(self.file_id, self.algorithm_name, result)
+        envelope = Envelope.send_selector_algorithm_result(self.file_id, self.algorithm_name, result)
         super().send(json.dumps(envelope), 0)

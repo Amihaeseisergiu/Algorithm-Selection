@@ -1,28 +1,29 @@
 package process.algorithm.shortestpath;
 
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.AStarShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import process.algorithm.Algorithm;
 import process.instance.Instance;
+import process.pubsub.Publisher;
+
+import java.util.List;
 
 public class AStar extends Algorithm {
     String source;
     String target;
-    Graph<String, DefaultEdge> graph;
 
-    public AStar(Instance instance) {
-        super(instance);
-        this.graph = instance.graph();
-        this.source = instance.parameters().get("source").toString();
-        this.target = instance.parameters().get("target").toString();
+    public AStar(Instance instance, List<Publisher> publishers) {
+        super(instance, publishers);
+        this.source = parameters.get("source").toString();
+        this.target = parameters.get("target").toString();
     }
 
-    public void run() {
+    public String algorithm() {
         AStarShortestPath<String, DefaultEdge> aStarShortestPath =
                 new AStarShortestPath<>(this.graph, (sourceVertex, targetVertex) -> 0);
         GraphPath<String, DefaultEdge> path = aStarShortestPath.getPath(this.source, this.target);
-        System.out.println("AStar path length: " + path.getLength());
+
+        return String.valueOf(path.getLength());
     }
 }

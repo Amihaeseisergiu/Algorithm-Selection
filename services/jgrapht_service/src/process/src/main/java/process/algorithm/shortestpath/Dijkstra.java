@@ -1,27 +1,28 @@
 package process.algorithm.shortestpath;
 
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import process.algorithm.Algorithm;
 import process.instance.Instance;
+import process.pubsub.Publisher;
+
+import java.util.List;
 
 public class Dijkstra extends Algorithm {
     String source;
     String target;
-    Graph<String, DefaultEdge> graph;
 
-    public Dijkstra(Instance instance) {
-        super(instance);
-        this.graph = instance.graph();
-        this.source = instance.parameters().get("source").toString();
-        this.target = instance.parameters().get("target").toString();
+    public Dijkstra(Instance instance, List<Publisher> publishers) {
+        super(instance, publishers);
+        this.source = parameters.get("source").toString();
+        this.target = parameters.get("target").toString();
     }
 
-    public void run() {
+    public String algorithm() {
         DijkstraShortestPath<String, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
         GraphPath<String, DefaultEdge> path = dijkstraShortestPath.getPath(this.source, this.target);
-        System.out.println("Dijkstra path length: " + path.getLength());
+
+        return String.valueOf(path.getLength());
     }
 }

@@ -111,9 +111,11 @@ export function createAlgorithmMetricsHTML(libraryName, algorithmName) {
                     <div>
                         ${algorithmName}
                     </div>
+                    <div class="pl-2" id="${libraryName}-${algorithmName}-init-time">
+                    </div>
                 </div>
                 <div class="flex flex-row items-center justify-center">
-                    <div id="${libraryName}-${algorithmName}-time">
+                    <div class="pl-2" id="${libraryName}-${algorithmName}-time">
                     </div>
                     <div id="${libraryName}-${algorithmName}-spinner"
                          class="inline-block h-4 w-4 animate-spin rounded-full ml-2 text-rose-400

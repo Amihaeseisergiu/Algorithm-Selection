@@ -1,3 +1,4 @@
+import time
 import subprocess
 from algorithm.algorithm import Algorithm
 
@@ -9,4 +10,4 @@ class BellmanFord(Algorithm):
 
     def algorithm(self, instance_path):
         return subprocess.Popen(["python3", "/app/src/process/process.py",
-                                 instance_path, self.algorithm_name, self.file_id, self.socket_id])
+                                 instance_path, self.algorithm_name, self.file_id, self.socket_id, str(time.time())])

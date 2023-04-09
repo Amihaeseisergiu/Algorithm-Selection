@@ -1,4 +1,4 @@
-import { get } from "./dom.js";
+import {get} from "./dom.js";
 
 export function plotMetrics(libraryName, algorithmName, metricData) {
     Object.keys(metricData).forEach((metricName) => {
@@ -9,14 +9,50 @@ export function plotMetrics(libraryName, algorithmName, metricData) {
 }
 
 export function addPlotTimeData(plot, data) {
-    let last_label_index = plot.data.labels.length
-    plot.data.labels.push(last_label_index);
+    let lastLabelIndex = plot.data.labels.length
+    plot.data.labels.push(lastLabelIndex);
 
     plot.data.datasets.forEach((dataset) => {
-        dataset.data.push(data);
+        if (!dataset.isAnnotation) {
+            dataset.data.push(data);
+        }
     });
 
     plot.update();
+}
+
+export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosition) {
+    for (const metricName in App[`${libraryName}-${algorithmName}-plots`]) {
+        let plot = App[`${libraryName}-${algorithmName}-plots`][metricName];
+
+        if (!xPosition) {
+            xPosition = plot.data.labels.length - 1;
+        }
+
+        createVerticalLine(App[`${libraryName}-${algorithmName}-plots`][metricName], name, xPosition);
+    }
+}
+
+export function createVerticalLine(plot, name, xPosition) {
+    plot.options.plugins.annotation.annotations[name] = {
+        type: 'line',
+        borderColor: '#fb7185',
+        borderWidth: 5,
+        borderDash: [8, 8],
+        drawTime: 'beforeDraw',
+        scaleID: 'x',
+        value: xPosition
+    };
+
+    plot.data.datasets.push(
+        {
+            type: 'line',
+            isAnnotation: true,
+            label: name,
+            backgroundColor: '#fb7185',
+            data: []
+        }
+    );
 }
 
 export function createAlgorithmPlots(libraryName, algorithmName) {
@@ -27,7 +63,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
         "memory": new Chart(memoryCanvas,
             {
                 type: 'line',
-                data : {
+                data: {
                     labels: [],
                     datasets: [
                         {
@@ -42,7 +78,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                         }
                     ]
                 },
-                options : {
+                options: {
                     maintainAspectRatio: false,
                     scales: {
                         y: {
@@ -63,6 +99,14 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                                 }
                             }
                         }
+                    },
+                    plugins: {
+                        annotation: {
+                            common: {
+                                drawTime: 'beforeDraw'
+                            },
+                            annotations: {}
+                        }
                     }
                 }
             }
@@ -70,7 +114,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
         "cpu": new Chart(cpuCanvas,
             {
                 type: 'line',
-                data : {
+                data: {
                     labels: [],
                     datasets: [
                         {
@@ -85,7 +129,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                         }
                     ]
                 },
-                options : {
+                options: {
                     maintainAspectRatio: false,
                     scales: {
                         y: {
@@ -105,6 +149,14 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                                     size: 20
                                 }
                             }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            common: {
+                                drawTime: 'beforeDraw'
+                            },
+                            annotations: {}
                         }
                     }
                 }

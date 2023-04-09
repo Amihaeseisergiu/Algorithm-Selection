@@ -1,5 +1,5 @@
+import time
 import subprocess
-import networkx as nx
 from algorithm.algorithm import Algorithm
 
 
@@ -10,4 +10,4 @@ class BellmanFord(Algorithm):
 
     def algorithm(self, instance_path):
         return subprocess.Popen(["java", "-jar", "-Xmx8192m", "/process/process.jar",
-                                 instance_path, self.algorithm_name, self.file_id, self.socket_id])
+                                 instance_path, self.algorithm_name, self.file_id, self.socket_id, str(time.time())])
