@@ -1,4 +1,4 @@
-import {get, getData, setData} from "../utils/dom.js";
+import {get, setData} from "../utils/dom.js";
 import {createAlgorithmPlots} from "../utils/chart.js";
 
 export function addLibraryMetricsHTML(libraryName) {
@@ -17,8 +17,10 @@ export function updateContainerHeights(libraryName, algorithmName) {
     let libraryElement = get(`${libraryName}-algorithms`);
     let algorithmsElement = get(`${libraryName}-${algorithmName}-metrics-container`);
 
-    algorithmsElement.style.maxHeight = algorithmsElement.scrollHeight + "px";
-    libraryElement.style.maxHeight = libraryElement.scrollHeight + algorithmsElement.scrollHeight + "px";
+    if (parseInt(libraryElement.style.maxHeight) < libraryElement.scrollHeight + algorithmsElement.scrollHeight) {
+        algorithmsElement.style.maxHeight = algorithmsElement.scrollHeight + "px";
+        libraryElement.style.maxHeight = libraryElement.scrollHeight + algorithmsElement.scrollHeight + "px";
+    }
 }
 
 export function addAlgorithmsMetricsHTML(libraryName, algorithmName) {
@@ -38,6 +40,8 @@ export function addAlgorithmsMetricsHTML(libraryName, algorithmName) {
         setData(`${libraryName}-${algorithmName}-metrics`, "selected_algorithm", true);
         get(`${libraryName}-${algorithmName}-scheduled`).remove();
     }
+
+    updateContainerHeights(libraryName, algorithmName);
 }
 
 export function createLibraryMetricsHTML(libraryName) {
@@ -93,8 +97,13 @@ export function createAlgorithmMetricsHTML(libraryName, algorithmName) {
             <div class="flex flex-row justify-between items-center text-2xl font-semibold text-neutral-500 border-b-4
                         rounded-b-md hover:border-rose-400 transition-all duration-500 cursor-pointer"
                  @click="selected_algorithm = !selected_algorithm;
-                    $refs.${libraryName}_algorithms_container.style.maxHeight = $refs.${libraryName}_algorithms_container.scrollHeight +
-                        $refs.${libraryName}_${algorithmName.replace(/[^A-Z0-9]+/ig, "_")}_metrics_container.scrollHeight + 'px';">
+                    if (parseInt($refs.${libraryName}_algorithms_container.style.maxHeight) < 
+                        $refs.${libraryName}_algorithms_container.scrollHeight +
+                        $refs.${libraryName}_${algorithmName.replace(/[^A-Z0-9]+/ig, "_")}_metrics_container.scrollHeight) {
+                            $refs.${libraryName}_algorithms_container.style.maxHeight = $refs.${libraryName}_algorithms_container.scrollHeight +
+                            $refs.${libraryName}_${algorithmName.replace(/[^A-Z0-9]+/ig, "_")}_metrics_container.scrollHeight + 'px';
+                        }
+                 ">
                 <div class="flex items-center px-2 pb-2">
                     <div class="pr-2" id="${libraryName}-${algorithmName}-scheduled">
                         Scheduled:
