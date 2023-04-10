@@ -32,16 +32,15 @@
                 </div>
                 <div id="instance-metadata" class="w-full p-4" x-data="{algorithmType: 'Select algorithm type', mode: 0}">
                     <div class="w-full font-semibold rounded-2xl border-2 border-solid border-gray-300 shadow
-                               text-neutral-400 my-2 cursor-pointer duration-500 flex flex-row divide-x-2
-                               hover:scale-[1.02] shadow hover:shadow-xl">
+                               text-neutral-400 my-2 cursor-pointer duration-500 flex flex-row divide-x-2">
                         <div class="w-1/2 h-full text-center p-2 rounded-l-2xl scale-[1.008] transition-all duration-500"
-                             :class="mode === 0 ? 'bg-rose-400 text-white border-rose-400' : ''"
+                             :class="mode === 0 ? 'bg-rose-400 text-white border-rose-400 shadow-xl' : ''"
                              @click="mode = (mode + 1) % 2">
                             Sequential
                         </div>
 
                         <div class="w-1/2 h-full text-center p-2 rounded-r-2xl scale-[1.008] transition-all duration-500"
-                             :class="mode === 1 ? 'bg-rose-400 text-white border-rose-400' : ''"
+                             :class="mode === 1 ? 'bg-rose-400 text-white border-rose-400 shadow-xl' : ''"
                              @click="mode = (mode + 1) % 2">
                             Parallel
                         </div>

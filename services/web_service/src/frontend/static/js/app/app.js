@@ -40,7 +40,7 @@ export function initializeApp() {
         let metrics = data["payload"]["metrics"];
         let time = data["payload"]["time"];
 
-        plotMetrics(libraryName, algorithmName, metrics);
+        plotMetrics(libraryName, algorithmName, metrics, time);
         get(`${libraryName}-${algorithmName}-time`).textContent = `${time.toFixed(2)} s`;
     });
 
@@ -64,7 +64,7 @@ export function initializeApp() {
         let algorithmName = data["header"]["algorithm_name"];
         let init_time = parseFloat(data["payload"]["init_time_end"]);
 
-        createPlotsVerticalLine(libraryName, algorithmName, "Initialization");
+        createPlotsVerticalLine(libraryName, algorithmName, "Initialization", init_time.toFixed(2));
         get(`${libraryName}-${algorithmName}-init-time`).innerText = `- initialized in ${init_time.toFixed(2)} s`;
     });
 }

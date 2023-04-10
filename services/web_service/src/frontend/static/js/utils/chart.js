@@ -1,16 +1,16 @@
 import {get} from "./dom.js";
 
-export function plotMetrics(libraryName, algorithmName, metricData) {
+export function plotMetrics(libraryName, algorithmName, metricData, time) {
     Object.keys(metricData).forEach((metricName) => {
         let metricPlot = App[`${libraryName}-${algorithmName}-plots`][`${metricName}`];
 
-        addPlotTimeData(metricPlot, metricData[metricName]);
+        addPlotTimeData(metricPlot, metricData[metricName], time);
     });
 }
 
-export function addPlotTimeData(plot, data) {
+export function addPlotTimeData(plot, data, time) {
     let lastLabelIndex = plot.data.labels.length
-    plot.data.labels.push(lastLabelIndex);
+    plot.data.labels.push(time.toFixed(2));
 
     plot.data.datasets.forEach((dataset) => {
         if (!dataset.isAnnotation) {
@@ -21,15 +21,34 @@ export function addPlotTimeData(plot, data) {
     plot.update();
 }
 
+export function binarySearch(array, el) {
+    let m = 0;
+    let n = array.length - 1;
+
+    while (m <= n) {
+        let k = (n + m) >> 1;
+        let cmp = el - array[k];
+        if (cmp > 0) {
+            m = k + 1;
+        } else if(cmp < 0) {
+            n = k - 1;
+        } else {
+            return [k, k + 1];
+        }
+    }
+
+    return [n, n + 1];
+}
+
 export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosition) {
     for (const metricName in App[`${libraryName}-${algorithmName}-plots`]) {
         let plot = App[`${libraryName}-${algorithmName}-plots`][metricName];
 
-        if (!xPosition) {
-            xPosition = plot.data.labels.length - 1;
-        }
+        let interval = binarySearch(plot.data.labels, xPosition);
+        let position = xPosition - plot.data.labels[interval[0]] < plot.data.labels[interval[1]] - xPosition ?
+            interval[0] : interval[1];
 
-        createVerticalLine(App[`${libraryName}-${algorithmName}-plots`][metricName], name, xPosition);
+        createVerticalLine(App[`${libraryName}-${algorithmName}-plots`][metricName], name, position);
     }
 }
 
@@ -53,6 +72,8 @@ export function createVerticalLine(plot, name, xPosition) {
             data: []
         }
     );
+
+    plot.update();
 }
 
 export function createAlgorithmPlots(libraryName, algorithmName) {
@@ -93,7 +114,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Time (ds)',
+                                text: 'Time (s)',
                                 font: {
                                     size: 20
                                 }
@@ -144,7 +165,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Time (ds)',
+                                text: 'Time (s)',
                                 font: {
                                     size: 20
                                 }
