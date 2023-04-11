@@ -1,4 +1,5 @@
 import {get} from "./dom.js";
+import {binarySearch} from "./algorithms.js";
 
 export function plotMetrics(libraryName, algorithmName, metricData, time) {
     Object.keys(metricData).forEach((metricName) => {
@@ -21,25 +22,6 @@ export function addPlotTimeData(plot, data, time) {
     plot.update();
 }
 
-export function binarySearch(array, el) {
-    let m = 0;
-    let n = array.length - 1;
-
-    while (m <= n) {
-        let k = (n + m) >> 1;
-        let cmp = el - array[k];
-        if (cmp > 0) {
-            m = k + 1;
-        } else if(cmp < 0) {
-            n = k - 1;
-        } else {
-            return [k, k + 1];
-        }
-    }
-
-    return [n, n + 1];
-}
-
 export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosition) {
     for (const metricName in App[`${libraryName}-${algorithmName}-plots`]) {
         let plot = App[`${libraryName}-${algorithmName}-plots`][metricName];
@@ -47,6 +29,12 @@ export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosit
         let interval = binarySearch(plot.data.labels, xPosition);
         let position = xPosition - plot.data.labels[interval[0]] < plot.data.labels[interval[1]] - xPosition ?
             interval[0] : interval[1];
+
+        if (xPosition === plot.data.labels[interval[0]]) {
+            position = interval[0];
+        } else if (xPosition === plot.data.labels[interval[1]]) {
+            position = interval[1];
+        }
 
         createVerticalLine(App[`${libraryName}-${algorithmName}-plots`][metricName], name, position);
     }

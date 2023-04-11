@@ -5,9 +5,8 @@ import requests
 
 class InstanceRepository:
     @staticmethod
-    def download_instance_file(file_id):
-        web_service_name = os.environ['WEB_SERVICE_NAME']
-        instance_data = requests.get(f"http://{web_service_name}:5000/download/{file_id}")
+    def download_instance_file(file_id, web_service_id):
+        instance_data = requests.get(f"http://{web_service_id}:5000/download/{file_id}")
         instance_json = json.loads(instance_data.json())
 
         directory_path = f"/files"

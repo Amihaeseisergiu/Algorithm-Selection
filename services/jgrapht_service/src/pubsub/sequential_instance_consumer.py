@@ -19,8 +19,9 @@ class SequentialInstanceConsumer(Consumer):
         data_json = json.loads(data)
         socket_id = data_json["socket_id"]
         file_id = data_json["file_id"]
+        web_service_id = data_json["web_service_id"]
 
-        algorithm_type, instance_path = InstanceRepository.download_instance_file(file_id)
+        algorithm_type, instance_path = InstanceRepository.download_instance_file(file_id, web_service_id)
         SequentialExecutor(socket_id, file_id, algorithm_type, instance_path, data_json).execute()
 
     def __consume(self, data):

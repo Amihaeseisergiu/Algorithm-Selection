@@ -1,5 +1,6 @@
 import os
 import json
+import socket
 import eventlet
 from flask_restful import Api
 from flask import Flask
@@ -34,6 +35,9 @@ def register_socket(socket_id):
 def send_instance(instance_json):
     mode = instance_json['mode']
     socker_id = instance_json['socket_id']
+
+    web_service_id = socket.gethostname()
+    instance_json['web_service_id'] = web_service_id
 
     if mode == 'parallel':
         InstancePublisher('instances.parallel').send(json.dumps(instance_json))
