@@ -31,34 +31,36 @@ def register_socket(socket_id):
     NextLibraryConsumer(socket_id).consume()
 
 
-@socketio.on("send_instance")
-def send_instance(instance_json):
-    mode = instance_json['mode']
+@socketio.on("send_instance_parallel")
+def send_instance_parallel(instance_json):
+    web_service_id = socket.gethostname()
+    instance_json['web_service_id'] = web_service_id
+
+    InstancePublisher('instances.parallel').send(json.dumps(instance_json))
+
+
+@socketio.on("send_instance_sequential")
+def send_instance_sequential(instance_json):
     socker_id = instance_json['socket_id']
 
     web_service_id = socket.gethostname()
     instance_json['web_service_id'] = web_service_id
 
-    if mode == 'parallel':
-        InstancePublisher('instances.parallel').send(json.dumps(instance_json))
-    elif mode == 'sequential':
-        available_libraries = os.environ["LIBRARY_NAMES"].split(',')
+    available_libraries = os.environ["LIBRARY_NAMES"].split(',')
 
-        for library_name in available_libraries:
-            schedule_data = {
-                "header": {
-                    "library_name": library_name
-                }
+    for library_name in available_libraries:
+        schedule_data = {
+            "header": {
+                "library_name": library_name
             }
-            socketio.emit("schedule", schedule_data, to=socker_id)
+        }
+        socketio.emit("schedule", schedule_data, to=socker_id)
 
-        first_library = os.environ["SEQUENTIAL_LIBRARY_NAMES"].split(',')[0]
-        routing_key = f"{os.environ['INSTANCES_SEQUENTIAL_KEY_PREFIX']}.{first_library}"
-        instance_json['current_library'] = 0
+    first_library = os.environ["SEQUENTIAL_LIBRARY_NAMES"].split(',')[0]
+    routing_key = f"{os.environ['INSTANCES_SEQUENTIAL_KEY_PREFIX']}.{first_library}"
+    instance_json['current_library'] = 0
 
-        InstancePublisher(routing_key).send(json.dumps(instance_json))
-    else:
-        raise NotImplementedError("Unknown mode provided")
+    InstancePublisher(routing_key).send(json.dumps(instance_json))
 
 
 if __name__ == '__main__':

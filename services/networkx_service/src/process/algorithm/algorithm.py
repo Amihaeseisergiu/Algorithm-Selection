@@ -13,4 +13,4 @@ class Algorithm:
 
     def __publish_result(self, result):
         for publisher in self.publishers:
-            publisher.send(result)
+            publisher.send({"result": result})

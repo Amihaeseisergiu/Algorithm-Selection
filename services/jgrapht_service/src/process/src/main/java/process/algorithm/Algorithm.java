@@ -3,6 +3,7 @@ package process.algorithm;
 import com.jsoniter.any.Any;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
+import org.json.JSONObject;
 import process.instance.Instance;
 import process.pubsub.Publisher;
 
@@ -28,7 +29,7 @@ public abstract class Algorithm {
 
     private void publishResult(String result) {
         for(Publisher publisher : publishers) {
-            publisher.send(result);
+            publisher.send(new JSONObject().put("result", result));
         }
     }
 }

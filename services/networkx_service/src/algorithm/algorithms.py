@@ -7,9 +7,9 @@ class Algorithms:
     def __init__(self, socket_id, file_id):
         self.algorithm_types = {
             "shortest_path": [
-                Dijkstra(socket_id, file_id),
-                BellmanFord(socket_id, file_id),
-                AStar(socket_id, file_id)
+                Dijkstra(socket_id, file_id, "shortest_path"),
+                BellmanFord(socket_id, file_id, "shortest_path"),
+                AStar(socket_id, file_id, "shortest_path")
             ]
         }
 

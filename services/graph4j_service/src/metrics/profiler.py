@@ -4,15 +4,16 @@ import psutil
 import multiprocessing
 from threading import Thread
 from pubsub.user_metric_publisher import UserMetricPublisher
-from pubsub.selector_metric_publisher import SelectorMetricPublisher
+from pubsub.algorithms_data_publisher import AlgorithmsDataPublisher
 from network.envelope import Envelope
 
 
 class Profiler:
-    def __init__(self, socket_id, file_id, algorithm_name, interval=0.1):
+    def __init__(self, socket_id, file_id, algorithm_name, algorithm_type, interval=0.1):
         self.socket_id = socket_id
         self.file_id = file_id
         self.algorithm_name = algorithm_name
+        self.algorithm_type = algorithm_type
         self.interval = interval
 
         self.stopped = None
@@ -68,6 +69,9 @@ class Profiler:
         else:
             self.last_cpu = current_cpu
 
+        self.total_memory += current_memory
+        self.total_cpu += current_cpu
+
         self.max_memory = max(self.max_memory, current_memory)
         self.max_cpu = max(self.max_cpu, current_cpu)
 
@@ -102,18 +106,17 @@ class Profiler:
 
         UserMetricPublisher(self.socket_id).send(json.dumps(end_envelope))
 
-        selector_metrics = {
-            "max_memory": self.max_memory,
-            "max_cpu": self.max_cpu,
-            "time": self.last_recorded_time
+        data_aggregator_features = {
+            "avg_memory": self.total_memory / self.emitted_data_points,
+            "avg_cpu": self.total_cpu / self.emitted_data_points,
+            "total_time": self.last_recorded_time
         }
 
-        selector_envelope = Envelope.create_selector_envelope(file_id=self.file_id, algorithm_name=self.algorithm_name)
-        selector_envelope["payload"] = {
-            "metrics": selector_metrics
-        }
+        algorithm_data_envelope = Envelope.create_algorithm_data_envelope(
+            file_id=self.file_id, algorithm_name=self.algorithm_name, algorithm_type=self.algorithm_type)
+        algorithm_data_envelope["payload"] = data_aggregator_features
 
-        SelectorMetricPublisher().send(json.dumps(selector_envelope))
+        AlgorithmsDataPublisher().send(json.dumps(algorithm_data_envelope))
 
     def __monitor(self, pid):
         self.__init_metrics()
@@ -121,6 +124,8 @@ class Profiler:
         self.pid = pid
         self.stopped = False
         self.emitted_data_points = 0
+        self.total_memory = 0
+        self.total_cpu = 0
         self.initial_memory = self.last_memory = self.max_memory = 0
         self.initial_cpu = self.last_cpu = self.max_cpu = 0
         self.initial_time = self.last_recorded_time = time.time()

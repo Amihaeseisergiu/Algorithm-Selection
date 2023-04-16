@@ -5,32 +5,24 @@ import org.json.JSONObject;
 public class Envelope {
     private static final String libraryName = System.getenv("LIBRARY_NAME");
 
-    public static String sendSelectorAlgorithmResult(String fileId, String algorithmName, String result) {
+    public static JSONObject sendAlgorithmData(String fileId, String algorithmName, String algorithmType) {
         return new JSONObject()
                 .put("header",
                         new JSONObject()
                                 .put("file_id", fileId)
                                 .put("algorithm_name", algorithmName)
+                                .put("algorithm_type", algorithmType)
                                 .put("library_name", libraryName)
-                )
-                .put("payload",
-                        new JSONObject()
-                                .put("result", result)
-                ).toString();
+                );
     }
 
-    public static String sendUserInitTime(String socketId, String algorithmName, String time) {
+    public static JSONObject sendUserData(String socketId, String algorithmName) {
         return new JSONObject()
                 .put("header",
                         new JSONObject()
                                 .put("socket_id", socketId)
-                                .put("event_name", "init_time")
                                 .put("library_name", libraryName)
                                 .put("algorithm_name", algorithmName)
-                )
-                .put("payload",
-                        new JSONObject()
-                                .put("init_time_end", time)
-                ).toString();
+                );
     }
 }

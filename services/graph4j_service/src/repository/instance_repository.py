@@ -19,3 +19,11 @@ class InstanceRepository:
             f.write(instance_data.content)
 
         return instance_json['algorithm_type'], file_path
+
+    @staticmethod
+    def load_instance_file(file_id):
+        directory_path = f"/files"
+        file_path = f'{directory_path}/{file_id}'
+
+        with open(file_path) as f:
+            return json.loads(json.load(f))

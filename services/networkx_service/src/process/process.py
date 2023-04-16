@@ -3,25 +3,43 @@ import time
 
 from algorithm.algorithms import Algorithms
 from instance.instance_repository import InstanceRepository
-from pubsub.selector_algorithm_publisher import SelectorAlgorithmPublisher
-from pubsub.user_init_publisher import UserInitPublisher
+from pubsub.algorithms_data_publisher import AlgorithmsDataPublisher
+from pubsub.user_publisher import UserPublisher
 
 if __name__ == "__main__":
     parameters = sys.argv[1:]
 
     instance_path = parameters[0]
     algorithm_name = parameters[1]
-    file_id = parameters[2]
-    socket_id = parameters[3]
-    start_time = float(parameters[4])
+    algorithm_type = parameters[2]
+    file_id = parameters[3]
+    socket_id = parameters[4]
+    start_time = float(parameters[5])
 
     algorithmPublishers = [
-        SelectorAlgorithmPublisher(file_id, algorithm_name)
+        AlgorithmsDataPublisher(file_id, algorithm_name, algorithm_type)
     ]
 
     instance = InstanceRepository.get_instance(instance_path)
     algorithm = Algorithms.get_mapping(instance, algorithmPublishers)[algorithm_name]
 
-    UserInitPublisher(socket_id, algorithm_name).send(time.time() - start_time)
+    userPublisher = UserPublisher(socket_id, algorithm_name, algorithm_type)
+    aggregatorPublisher = AlgorithmsDataPublisher(file_id, algorithm_name, algorithm_type)
+
+    initialization_time = time.time() - start_time
+    userPublisher.send(
+        {
+            "event_name": "init_time",
+            "payload":
+                {
+                    "init_time_end": initialization_time
+                }
+        }
+    )
+    aggregatorPublisher.send(
+        {
+            "initialization_time": initialization_time
+        }
+    )
 
     algorithm.run()

@@ -17,22 +17,25 @@ COPY . .
 
 RUN pip3 install -r requirements.txt
 
-# Service variables
+ENV LIBRARY_NAME=Graph4J
+
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=5000
+
 ENV RABBITMQ_USER=user
 ENV RABBITMQ_PASS=pass
+
 ENV INSTANCES_TOPIC=instances
 ENV INSTANCES_PARALLEL_QUEUE=graph4j_instances_parallel
 ENV INSTANCES_PARALLEL_KEY=instances.parallel
 ENV INSTANCES_SEQUENTIAL_QUEUE=graph4j_instances_sequential
 ENV INSTANCES_SEQUENTIAL_KEY=instances.sequential.graph4j
+
 ENV USER_METRICS_TOPIC=user_metrics
 ENV NEXT_LIBRARY_TOPIC=next_library
-ENV SELECTOR_METRICS_TOPIC=selector_metrics
-ENV LIBRARY_NAME=Graph4J
 
-# Process variables
-ENV SELECTOR_ALGORITHMS_TOPIC=selector_algorithms
+ENV DATA_AGGREGATOR_TOPIC=data_aggregator
+ENV ALGORITHMS_DATA_KEY=algorithms.data
+ENV INSTANCE_FEATURES_KEY=instance.features
 
 CMD python3 /app/src/service.py

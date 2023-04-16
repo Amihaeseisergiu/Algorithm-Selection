@@ -25,7 +25,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=user
       - MONGO_INITDB_ROOT_PASSWORD=pass
-      - MONGO_INITDB_DATABASE=algorithms
       - MONGODB_DATA_DIR=/data/db
       - MONGODB_LOG_DIR=/dev/null
     volumes:
@@ -43,11 +42,22 @@ services:
     restart: on-failure
 
   algorithm-selector-service:
-    build: ./algorithm_selector
+    build: ./algorithm_selector_service
     volumes:
-      - ./algorithm_selector/src:/app/src
+      - ./algorithm_selector_service/src:/app/src
     ports:
       - 5001:5000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+
+  data-aggregator-service:
+    build: ./data_aggregator_service
+    volumes:
+      - ./data_aggregator_service/src:/app/src
+    ports:
+      - 5002:5000
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -58,27 +68,29 @@ services:
     volumes:
       - ./networkx_service/src:/app/src
     ports:
-      - 5002:5000
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    restart: on-failure
-  jgrapht-service:
-    build: ./jgrapht_service
-    volumes:
-      - ./jgrapht_service/src:/app/src
-    ports:
       - 5003:5000
     depends_on:
       rabbitmq:
         condition: service_healthy
     restart: on-failure
+
+  jgrapht-service:
+    build: ./jgrapht_service
+    volumes:
+      - ./jgrapht_service/src:/app/src
+    ports:
+      - 5004:5000
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+
   graph4j-service:
     build: ./graph4j_service
     volumes:
       - ./graph4j_service/src:/app/src
     ports:
-      - 5004:5000
+      - 5005:5000
     depends_on:
       rabbitmq:
         condition: service_healthy
