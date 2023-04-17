@@ -15,7 +15,6 @@ class AlgorithmsDataConsumer(Consumer):
                          auto_delete=False, durable=True, message_processor=self.__consume_algorithms_data)
 
     def __consume_algorithms_data(self, data):
-        print(f"[X] Received algorithm data {data}")
         data_json = json.loads(data)
         features = data_json["header"] | data_json["payload"]
 

@@ -5,8 +5,9 @@ from security.credentials import CredentialsProvider
 
 
 class Publisher:
-    def __init__(self, topic, exchange_type):
+    def __init__(self, topic, routing_key, exchange_type):
         self.topic = topic
+        self.routing_key = routing_key
         self.exchange_type = exchange_type
 
     def __callback(self, data, delay):
@@ -19,7 +20,7 @@ class Publisher:
         channel.exchange_declare(exchange=self.topic, exchange_type=self.exchange_type)
         channel.basic_publish(
             exchange=self.topic,
-            routing_key='',
+            routing_key=self.routing_key,
             body=data)
         connection.close()
 

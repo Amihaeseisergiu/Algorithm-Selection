@@ -11,4 +11,7 @@ ENV FLASK_RUN_PORT=5000
 ENV RABBITMQ_USER=user
 ENV RABBITMQ_PASS=pass
 
+ENV DATASET_ENTRY_TOPIC=dataset_entry
+ENV DATASET_ENTRY_QUEUE=dataset_entry_selectors
+
 CMD python3 /app/src/service.py

@@ -30,7 +30,7 @@ public class Main {
         Publisher userPublisher = new UserPublisher(socketId, algorithmName);
         Publisher algorithmsDataPublisher = new AlgorithmsDataPublisher(fileId, algorithmName, algorithmType);
 
-        String initializationTime = String.valueOf(System.currentTimeMillis() / 1000.0 - start_time);
+        double initializationTime = System.currentTimeMillis() / 1000.0 - start_time;
         userPublisher.send(
                 new JSONObject()
                         .put("event_name", "init_time")

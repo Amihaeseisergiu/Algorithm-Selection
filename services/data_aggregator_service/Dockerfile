@@ -20,5 +20,8 @@ ENV ALGORITHMS_DATA_QUEUE=algorithms_data
 ENV ALGORITHMS_DATA_KEY=algorithms.data
 ENV INSTANCE_FEATURES_QUEUE=instance_features
 ENV INSTANCE_FEATURES_KEY=instance.features
+ENV DATASET_ENTRY_TOPIC=dataset_entry
+
+ENV LIBRARY_NAMES=NetworkX,Graph4J,JGraphT
 
 CMD python3 /app/src/service.py

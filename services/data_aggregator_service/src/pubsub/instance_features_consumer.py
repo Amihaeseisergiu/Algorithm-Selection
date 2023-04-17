@@ -2,6 +2,7 @@ import os
 import json
 import pymongo
 from repository.database import Database
+from pubsub.dataset_entry_publisher import DatasetEntryPublisher
 from .consumer import Consumer
 
 
@@ -15,15 +16,14 @@ class InstanceFeaturesConsumer(Consumer):
                          auto_delete=False, durable=True, message_processor=self.__consume_instance_features)
 
     def __consume_instance_features(self, data):
-        print(f"[X] Received instance features: {data}", flush=True)
         data_json = json.loads(data)
         features = data_json["header"] | data_json["payload"]
 
         file_id = features["file_id"]
         library_name = features["library_name"]
 
-        algorithms_aggregations = Database.get("data")["algorithms-data"]
-        algorithms_aggregations.create_index(
+        algorithms_aggregations_collection = Database.get("data")["algorithms-data"]
+        algorithms_aggregations_collection.create_index(
             keys=[
                 ("file_id", pymongo.ASCENDING),
                 ("library_name", pymongo.ASCENDING),
@@ -32,11 +32,131 @@ class InstanceFeaturesConsumer(Consumer):
             unique=True
         )
 
-        algorithms_aggregations.update_many(
+        algorithms_aggregations_collection.update_many(
             filter={
                 "file_id": file_id,
                 "library_name": library_name
             },
-            update={"$set": features},
+            update=[
+                {
+                    "$set": features
+                },
+                {
+                    "$set": {
+                        "algorithm_execution_time": {
+                            "$subtract": ["$total_time", "$initialization_time"]
+                        },
+                        "score": {
+                            "$add": [
+                                {
+                                    "$multiply": [
+                                        0.99,
+                                        {
+                                            "$subtract": [
+                                                "$total_time",
+                                                "$initialization_time"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "$multiply": [
+                                        0.01,
+                                        {
+                                            "$add": [
+                                                "$avg_memory",
+                                                "$avg_cpu"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
             upsert=True
         )
+
+        libraries_winners_collection = Database.get("data")["libraries-winners"]
+        libraries_winners_collection.create_index(
+            keys=[
+                ("file_id", pymongo.ASCENDING),
+                ("library_name", pymongo.ASCENDING)
+            ],
+            unique=True
+        )
+
+        library_winner = list(algorithms_aggregations_collection.aggregate(
+            [
+                {
+                    "$match": {
+                        "file_id": file_id,
+                        "library_name": library_name
+                    }
+                },
+                {
+                    "$sort": {
+                        "result": pymongo.ASCENDING,
+                        "score": pymongo.ASCENDING
+                    }
+                },
+            ]
+        ))[0]
+
+        libraries_winners_collection.update_one(
+            filter={
+                "file_id": file_id,
+                "library_name": library_name
+            },
+            update={
+                "$set": library_winner
+            },
+            upsert=True
+        )
+
+        n_libraries = len(os.environ["LIBRARY_NAMES"].split(','))
+        libraries_winners = list(libraries_winners_collection.aggregate(
+            [
+                {
+                    "$match": {
+                        "file_id": file_id
+                    }
+                },
+                {
+                    "$sort": {
+                        "result": pymongo.ASCENDING,
+                        "score": pymongo.ASCENDING
+                    }
+                },
+                {
+                    "$project": {
+                        "_id": 0
+                    }
+                }
+            ]
+        ))
+
+        if len(libraries_winners) == n_libraries:
+            global_winner = libraries_winners[0]
+
+            dataset_collection = Database.get("data")["dataset"]
+            dataset_collection.create_index(
+                keys=[
+                    ("file_id", pymongo.ASCENDING),
+                    ("library_name", pymongo.ASCENDING),
+                    ("algorithm_name", pymongo.ASCENDING)
+                ],
+                unique=True
+            )
+            dataset_collection.update_one(
+                filter={
+                    "file_id": file_id
+                },
+                update={
+                    "$set": global_winner
+                },
+                upsert=True
+            )
+
+            DatasetEntryPublisher().send(json.dumps(global_winner))
