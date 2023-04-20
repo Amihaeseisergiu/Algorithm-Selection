@@ -9,6 +9,7 @@ from resources.root import Root
 from resources.upload import Upload
 from resources.download import Download
 from pubsub.user_metric_consumer import UserMetricConsumer
+from pubsub.user_algorithm_consumer import UserAlgorithmConsumer
 from pubsub.instance_publisher import InstancePublisher
 from pubsub.next_library_consumer import NextLibraryConsumer
 from engineio.payload import Payload
@@ -28,6 +29,7 @@ api.add_resource(Download, "/download/<file_id>")
 @socketio.on("register_socket")
 def register_socket(socket_id):
     UserMetricConsumer(socketio, socket_id).consume()
+    UserAlgorithmConsumer(socketio, socket_id).consume()
     NextLibraryConsumer(socket_id).consume()
 
 
@@ -36,7 +38,8 @@ def send_instance_parallel(instance_json):
     web_service_id = socket.gethostname()
     instance_json['web_service_id'] = web_service_id
 
-    InstancePublisher('instances.parallel').send(json.dumps(instance_json))
+    InstancePublisher(os.environ["INSTANCES_SELECTOR_KEY"]).send(json.dumps(instance_json))
+    InstancePublisher(os.environ["INSTANCES_PARALLEL_KEY_PREFIX"]).send(json.dumps(instance_json))
 
 
 @socketio.on("send_instance_sequential")
@@ -45,6 +48,7 @@ def send_instance_sequential(instance_json):
 
     web_service_id = socket.gethostname()
     instance_json['web_service_id'] = web_service_id
+    InstancePublisher(os.environ["INSTANCES_SELECTOR_KEY"]).send(json.dumps(instance_json))
 
     available_libraries = os.environ["LIBRARY_NAMES"].split(',')
 

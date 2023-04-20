@@ -17,21 +17,21 @@ class FeaturesExtractor:
     def extract(self):
         n_nodes = self.graph.number_of_nodes()
         n_edges = self.graph.number_of_edges()
-        density = nx.density(self.graph)
+        #density = nx.density(self.graph)
 
-        components = nx.connected_components(self.graph)
-        largest_component = max(components, key=len)
-        subgraph = self.graph.subgraph(largest_component)
-        diameter = nx.diameter(subgraph)
+        #components = nx.connected_components(self.graph)
+        #largest_component = max(components, key=len)
+        #subgraph = self.graph.subgraph(largest_component)
+        #diameter = nx.diameter(subgraph)
 
-        transitivity = nx.transitivity(self.graph)
+        #transitivity = nx.transitivity(self.graph)
 
         features = [
             n_nodes,
             n_edges,
-            density,
-            diameter,
-            transitivity
+            #density,
+            #diameter,
+            #transitivity
         ]
 
         instance_features_envelope = Envelope.create_instance_features_envelope(

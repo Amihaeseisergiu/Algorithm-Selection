@@ -25,8 +25,10 @@ ENV USER_METRICS_TOPIC=user_metrics
 ENV INSTANCES_TOPIC=instances
 ENV INSTANCES_PARALLEL_KEY_PREFIX=instances.parallel
 ENV INSTANCES_SEQUENTIAL_KEY_PREFIX=instances.sequential
+ENV INSTANCES_SELECTOR_KEY=instances.selector
 ENV LIBRARY_NAMES=NetworkX,Graph4J,JGraphT
 ENV SEQUENTIAL_LIBRARY_NAMES=networkx,graph4j,jgrapht
 ENV NEXT_LIBRARY_TOPIC=next_library
+ENV USER_ALGORITHM_TOPIC=user_algorithm
 
 CMD python3 /app/src/backend/service.py

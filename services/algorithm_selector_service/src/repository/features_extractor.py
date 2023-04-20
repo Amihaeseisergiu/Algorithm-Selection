@@ -1,17 +1,10 @@
-import os
-import json
 import networkx as nx
 from .instance_repository import InstanceRepository
-from pubsub.instance_features_publisher import InstanceFeaturesPublisher
-from network.envelope import Envelope
 
 
 class FeaturesExtractor:
-    def __init__(self, file_id, algorithm_type):
-        self.library_name = os.environ["LIBRARY_NAME"]
-        self.file_id = file_id
-        self.algorithm_type = algorithm_type
-        self.instance = InstanceRepository.load_instance_file(file_id)
+    def __init__(self, instance):
+        self.instance = instance
         self.graph = nx.node_link_graph(self.instance['graph'], link="edges")
 
     def extract(self):
@@ -34,8 +27,4 @@ class FeaturesExtractor:
             #transitivity
         ]
 
-        instance_features_envelope = Envelope.create_instance_features_envelope(
-            file_id=self.file_id, algorithm_type=self.algorithm_type)
-        instance_features_envelope['payload']['features'] = features
-
-        InstanceFeaturesPublisher().send(json.dumps(instance_features_envelope))
+        return features

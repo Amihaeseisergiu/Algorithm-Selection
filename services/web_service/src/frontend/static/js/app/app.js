@@ -1,12 +1,16 @@
 import {get} from "../utils/dom.js";
 import {addAlgorithmsMetricsHTML, addLibraryMetricsHTML} from "../components/metrics.js";
 import {plotMetrics, createPlotsVerticalLine} from "../utils/chart.js";
+import {addAlgorithmSelectionResults} from "../components/selection.js";
 
 export function initializeApp() {
     window.App = {};
     App.socket = io();
 
-    get("libraries").innerHTML = "";
+    get("libraries").innerHTML = `
+        <div class="w-full" id="algorithm-selection">
+        </div>
+    `;
 
     App.socket.on('connect', function() {
         App.socket.emit('register_socket', App.socket.id);
@@ -66,5 +70,9 @@ export function initializeApp() {
 
         createPlotsVerticalLine(libraryName, algorithmName, "Initialization", init_time.toFixed(2));
         get(`${libraryName}-${algorithmName}-init-time`).innerText = `- initialized in ${init_time.toFixed(2)} s`;
+    });
+
+    App.socket.on("selected_data", (data) => {
+        addAlgorithmSelectionResults(data);
     });
 }

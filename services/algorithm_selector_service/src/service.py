@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from resources.root import Root
 from flask_restful import Api
+from pubsub.instance_consumer import InstanceConsumer
 from pubsub.dataset_entry_consumer import DatasetEntryConsumer
 
 app = Flask(__name__)
@@ -12,6 +13,7 @@ api.add_resource(Root, '/')
 
 
 if __name__ == '__main__':
+    InstanceConsumer().consume()
     DatasetEntryConsumer().consume()
 
     host = os.environ["FLASK_RUN_HOST"]

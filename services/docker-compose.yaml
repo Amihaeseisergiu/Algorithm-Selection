@@ -30,6 +30,28 @@ services:
     volumes:
       - ../docker_data/mongodb:/data/db
 
+  weaviate:
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    image: semitechnologies/weaviate:1.18.3
+    ports:
+      - 8080:8080
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+    volumes:
+      - ../docker_data/weaviate:/var/lib/weaviate
+
   web-service:
     build: ./web_service
     volumes:
@@ -50,6 +72,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      weaviate:
+        condition: service_started
     restart: on-failure
 
   data-aggregator-service:
@@ -61,6 +85,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      mongodb:
+        condition: service_started
     restart: on-failure
 
   networkx-service:

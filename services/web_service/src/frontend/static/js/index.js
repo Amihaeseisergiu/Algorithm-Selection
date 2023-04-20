@@ -1,6 +1,7 @@
 import {get, getData, click, changed} from "./utils/dom.js";
 import {upload} from "./utils/ajax.js";
 import {initializeApp} from "./app/app.js";
+import {addAlgorithmSelectionPanel} from "./components/selection.js";
 
 click(get("send-instance-button"), () => {
     initializeApp();
@@ -11,6 +12,7 @@ click(get("send-instance-button"), () => {
 
     upload(fileData, 'http://localhost:5000/upload', (fileId) => {
         console.log("Uploaded file uuid: ", fileId);
+        addAlgorithmSelectionPanel();
 
         if (mode === 0) {
             App.socket.emit(

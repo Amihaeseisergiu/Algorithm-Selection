@@ -1,6 +1,7 @@
 /docker_data/rabbitmq/data
 /docker_data/rabbitmq/log
 /docker_data/mongodb
+/docker_data/weaviate
 **/__pycache__/
 /graph_generator/output
 .DS_Store

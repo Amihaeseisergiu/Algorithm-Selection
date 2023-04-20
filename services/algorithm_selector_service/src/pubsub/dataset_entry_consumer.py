@@ -1,6 +1,8 @@
 import os
 import json
 from .consumer import Consumer
+from repository.database import Database
+from repository.schema import Schema
 
 
 class DatasetEntryConsumer(Consumer):
@@ -12,5 +14,17 @@ class DatasetEntryConsumer(Consumer):
                          message_processor=self.__consume_dataset_entry)
 
     def __consume_dataset_entry(self, data):
-        print(f"[X] Received dataset entry {data}", flush=True)
         data_json = json.loads(data)
+
+        schema_class = Schema.create_algorithm_type_schema(data_json['algorithm_type'])
+
+        entry = {
+            "algorithm": data_json["algorithm_name"],
+            "library": data_json["library_name"]
+        }
+
+        Database.client.data_object.create(
+            entry,
+            schema_class,
+            vector=data_json['features']
+        )
