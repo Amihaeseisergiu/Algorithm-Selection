@@ -25,6 +25,6 @@ public class Publisher {
     }
 
     public void send(JSONObject message) {
-        new Thread(() -> callback(message)).start();
+        callback(message);
     }
 }

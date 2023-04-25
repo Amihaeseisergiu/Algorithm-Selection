@@ -14,11 +14,11 @@ services:
     healthcheck:
       test: [ "CMD", "nc", "-z", "localhost", "5672" ]
       interval: 4s
-      timeout: 20s
+      timeout: 60s
       retries: 3
 
   mongodb:
-    image: mongo
+    image: mongo:6.0
     container_name: mongodb
     restart: unless-stopped
     command: mongod --auth

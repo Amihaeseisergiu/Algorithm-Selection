@@ -5,6 +5,7 @@ from algorithm.algorithms import Algorithms
 from instance.instance_repository import InstanceRepository
 from pubsub.algorithms_data_publisher import AlgorithmsDataPublisher
 from pubsub.user_publisher import UserPublisher
+from metric.profiler import Profiler
 
 if __name__ == "__main__":
     parameters = sys.argv[1:]
@@ -16,6 +17,9 @@ if __name__ == "__main__":
     socket_id = parameters[4]
     start_time = float(parameters[5])
 
+    profiler = Profiler(socket_id, file_id, algorithm_name, algorithm_type)
+    profiler.start()
+
     algorithmPublishers = [
         AlgorithmsDataPublisher(file_id, algorithm_name, algorithm_type)
     ]
@@ -23,9 +27,10 @@ if __name__ == "__main__":
     instance = InstanceRepository.get_instance(instance_path)
     algorithm = Algorithms.get_mapping(instance, algorithmPublishers)[algorithm_name]
 
-    userPublisher = UserPublisher(socket_id, algorithm_name, algorithm_type)
+    userPublisher = UserPublisher(socket_id, algorithm_name)
     aggregatorPublisher = AlgorithmsDataPublisher(file_id, algorithm_name, algorithm_type)
 
+    profiler.mark_initialization()
     initialization_time = time.time() - start_time
     userPublisher.send(
         {
@@ -43,3 +48,4 @@ if __name__ == "__main__":
     )
 
     algorithm.run()
+    profiler.stop()

@@ -32,6 +32,8 @@ def register_socket(socket_id):
     UserAlgorithmConsumer(socketio, socket_id).consume()
     NextLibraryConsumer(socket_id).consume()
 
+    socketio.emit("socket_registered", "", to=socket_id)
+
 
 @socketio.on("send_instance_parallel")
 def send_instance_parallel(instance_json):
@@ -44,7 +46,7 @@ def send_instance_parallel(instance_json):
 
 @socketio.on("send_instance_sequential")
 def send_instance_sequential(instance_json):
-    socker_id = instance_json['socket_id']
+    socket_id = instance_json['socket_id']
 
     web_service_id = socket.gethostname()
     instance_json['web_service_id'] = web_service_id
@@ -58,7 +60,7 @@ def send_instance_sequential(instance_json):
                 "library_name": library_name
             }
         }
-        socketio.emit("schedule", schedule_data, to=socker_id)
+        socketio.emit("schedule", schedule_data, to=socket_id)
 
     first_library = os.environ["SEQUENTIAL_LIBRARY_NAMES"].split(',')[0]
     routing_key = f"{os.environ['INSTANCES_SEQUENTIAL_KEY_PREFIX']}.{first_library}"

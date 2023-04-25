@@ -5,10 +5,13 @@ import process.algorithm.Algorithm;
 import process.algorithm.Algorithms;
 import process.instance.Instance;
 import process.instance.InstanceRepository;
+import process.metric.Profiler;
 import process.pubsub.Publisher;
 import process.pubsub.AlgorithmsDataPublisher;
 import process.pubsub.UserPublisher;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class Main {
@@ -18,7 +21,10 @@ public class Main {
         String algorithmType = args[2];
         String fileId = args[3];
         String socketId = args[4];
-        double start_time = Double.parseDouble(args[5]);
+        Instant startTime = Instant.now();
+
+        Profiler profiler = new Profiler(socketId, fileId, algorithmName, algorithmType);
+        profiler.start();
 
         List<Publisher> algorithmPublishers = List.of(
                 new AlgorithmsDataPublisher(fileId, algorithmName, algorithmType)
@@ -30,7 +36,8 @@ public class Main {
         Publisher userPublisher = new UserPublisher(socketId, algorithmName);
         Publisher algorithmsDataPublisher = new AlgorithmsDataPublisher(fileId, algorithmName, algorithmType);
 
-        double initializationTime = System.currentTimeMillis() / 1000.0 - start_time;
+        profiler.markInitialization();
+        double initializationTime = (double) Duration.between(startTime, Instant.now()).toMillis() / 1000;
         userPublisher.send(
                 new JSONObject()
                         .put("event_name", "init_time")
@@ -44,5 +51,6 @@ public class Main {
         );
 
         algorithm.run();
+        profiler.stop();
     }
 }

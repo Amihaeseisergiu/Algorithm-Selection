@@ -5,7 +5,7 @@ from network.envelope import Envelope
 
 
 class UserPublisher(Publisher):
-    def __init__(self, socket_id, algorithm_name, algorithm_type):
+    def __init__(self, socket_id, algorithm_name):
         user_metrics_topic = os.environ["USER_METRICS_TOPIC"]
         routing_key = f"{socket_id}_user_metric"
         super().__init__(user_metrics_topic, routing_key, 'direct')

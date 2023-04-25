@@ -1,5 +1,4 @@
 from threading import Thread
-from metrics.profiler import Profiler
 
 
 class Algorithm:
@@ -8,7 +7,6 @@ class Algorithm:
         self.file_id = file_id
         self.algorithm_name = algorithm_name
         self.algorithm_type = algorithm_type
-        self.profiler = Profiler(socket_id, file_id, algorithm_name, algorithm_type)
         self.runnable_algorithm = runnable_algorithm
 
     def __run_algorithm(self, instance_path):
@@ -16,9 +14,6 @@ class Algorithm:
 
     def __run_callback(self, instance_path):
         process = self.__run_algorithm(instance_path)
-
-        self.profiler.start(process.pid)
-
         process.wait()
 
     def create(self, instance_path):
