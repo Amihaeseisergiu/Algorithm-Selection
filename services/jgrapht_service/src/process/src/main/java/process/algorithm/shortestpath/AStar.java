@@ -19,11 +19,11 @@ public class AStar extends Algorithm {
         this.target = parameters.get("target").toString();
     }
 
-    public String algorithm() {
+    public double algorithm() {
         AStarShortestPath<String, DefaultEdge> aStarShortestPath =
                 new AStarShortestPath<>(this.graph, (sourceVertex, targetVertex) -> 0);
         GraphPath<String, DefaultEdge> path = aStarShortestPath.getPath(this.source, this.target);
 
-        return String.valueOf(path.getLength());
+        return path.getLength();
     }
 }

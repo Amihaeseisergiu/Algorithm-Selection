@@ -19,10 +19,10 @@ public class Dijkstra extends Algorithm {
         this.target = parameters.get("target").toString();
     }
 
-    public String algorithm() {
+    public double algorithm() {
         DijkstraShortestPath<String, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
         GraphPath<String, DefaultEdge> path = dijkstraShortestPath.getPath(this.source, this.target);
 
-        return String.valueOf(path.getLength());
+        return path.getLength();
     }
 }

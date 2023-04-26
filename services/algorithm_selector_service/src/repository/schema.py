@@ -7,7 +7,7 @@ class Schema:
     def create_algorithm_type_schema(algorithm_type):
         schema_class = {
             "class": algorithm_type.capitalize(),
-            "description": "Shortest path vector space",
+            "description": f"{algorithm_type.capitalize()} vector space",
             "properties": [
                 {
                     "dataType": ["text"],

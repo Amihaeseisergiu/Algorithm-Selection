@@ -19,14 +19,14 @@ public abstract class Algorithm {
         this.publishers = publishers;
     }
 
-    protected abstract String algorithm();
+    protected abstract double algorithm();
 
     public void run() {
-        String result = algorithm();
+        double result = algorithm();
         publishResult(result);
     }
 
-    private void publishResult(String result) {
+    private void publishResult(double result) {
         for(Publisher publisher : publishers) {
             publisher.send(new JSONObject().put("result", result));
         }

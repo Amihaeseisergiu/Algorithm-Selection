@@ -25,7 +25,7 @@ if __name__ == "__main__":
     ]
 
     instance = InstanceRepository.get_instance(instance_path)
-    algorithm = Algorithms.get_mapping(instance, algorithmPublishers)[algorithm_name]
+    algorithm = Algorithms(instance, algorithmPublishers).get_algorithm(algorithm_name)
 
     userPublisher = UserPublisher(socket_id, algorithm_name)
     aggregatorPublisher = AlgorithmsDataPublisher(file_id, algorithm_name, algorithm_type)

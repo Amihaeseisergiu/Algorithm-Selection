@@ -1,16 +1,19 @@
+import time
+import subprocess
 from threading import Thread
 
 
 class Algorithm:
-    def __init__(self, socket_id, file_id, algorithm_name, algorithm_type, runnable_algorithm):
+    def __init__(self, socket_id, file_id, algorithm_name, algorithm_type):
         self.socket_id = socket_id
         self.file_id = file_id
         self.algorithm_name = algorithm_name
         self.algorithm_type = algorithm_type
-        self.runnable_algorithm = runnable_algorithm
 
     def __run_algorithm(self, instance_path):
-        return self.runnable_algorithm(instance_path)
+        return subprocess.Popen(["python3", "/app/src/process/process.py",
+                                 instance_path, self.algorithm_name, self.algorithm_type,
+                                 self.file_id, self.socket_id, str(time.time())])
 
     def __run_callback(self, instance_path):
         process = self.__run_algorithm(instance_path)

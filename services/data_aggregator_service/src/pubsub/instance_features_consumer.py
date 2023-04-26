@@ -87,22 +87,18 @@ class InstanceFeaturesConsumer(Consumer):
             unique=True
         )
 
-        library_winner = list(algorithms_aggregations_collection.aggregate(
+        library_algorithms = list(algorithms_aggregations_collection.aggregate(
             [
                 {
                     "$match": {
                         "file_id": file_id,
                         "library_name": library_name
                     }
-                },
-                {
-                    "$sort": {
-                        "result": pymongo.ASCENDING,
-                        "score": pymongo.ASCENDING
-                    }
-                },
+                }
             ]
-        ))[0]
+        ))
+
+        library_winner = sorted(library_algorithms, key=lambda e: (e['result'], e['score']))[0]
 
         libraries_winners_collection.update_one(
             filter={
@@ -116,17 +112,11 @@ class InstanceFeaturesConsumer(Consumer):
         )
 
         n_libraries = len(os.environ["LIBRARY_NAMES"].split(','))
-        libraries_winners = list(libraries_winners_collection.aggregate(
+        libraries_algorithms = list(libraries_winners_collection.aggregate(
             [
                 {
                     "$match": {
                         "file_id": file_id
-                    }
-                },
-                {
-                    "$sort": {
-                        "result": pymongo.ASCENDING,
-                        "score": pymongo.ASCENDING
                     }
                 },
                 {
@@ -137,8 +127,8 @@ class InstanceFeaturesConsumer(Consumer):
             ]
         ))
 
-        if len(libraries_winners) == n_libraries:
-            global_winner = libraries_winners[0]
+        if len(libraries_algorithms) == n_libraries:
+            global_winner = sorted(libraries_algorithms, key=lambda e: (e['result'], e['score']))[0]
 
             dataset_collection = Database.get("data")["dataset"]
             dataset_collection.create_index(

@@ -1,5 +1,7 @@
 package process.algorithm;
 
+import lombok.RequiredArgsConstructor;
+import process.algorithm.coloring.DSatur;
 import process.algorithm.shortestpath.FloydWarshall;
 import process.algorithm.shortestpath.BellmanFord;
 import process.algorithm.shortestpath.Dijkstra;
@@ -7,16 +9,25 @@ import process.instance.Instance;
 import process.pubsub.Publisher;
 
 import java.util.List;
-import java.util.Map;
-import static java.util.Map.entry;
 
+@RequiredArgsConstructor
 public class Algorithms {
 
-    public static Map<String, Algorithm> getMapping(Instance instance, List<Publisher> publishers) {
-        return Map.ofEntries(
-                entry("Dijkstra", new Dijkstra(instance, publishers)),
-                entry("Floyd-Warshall", new FloydWarshall(instance, publishers)),
-                entry("Bellman-Ford", new BellmanFord(instance, publishers))
-        );
+    private final Instance instance;
+    private final List<Publisher> publishers;
+
+    public Algorithm getAlgorithm(String algorithmName) throws Exception {
+        switch (algorithmName) {
+            case "Dijkstra":
+                return new Dijkstra(instance, publishers);
+            case "Bellman-Ford":
+                return new BellmanFord(instance, publishers);
+            case "Floyd-Warshall":
+                return new FloydWarshall(instance, publishers);
+            case "DSatur":
+                return new DSatur(instance, publishers);
+            default:
+                throw new Exception("Algorithm not implemented");
+        }
     }
 }

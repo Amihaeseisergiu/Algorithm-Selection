@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String instancePath = args[0];
         String algorithmName = args[1];
         String algorithmType = args[2];
@@ -31,7 +31,7 @@ public class Main {
         );
 
         Instance instance = InstanceRepository.getInstance(instancePath);
-        Algorithm algorithm = Algorithms.getMapping(instance, algorithmPublishers).get(algorithmName);
+        Algorithm algorithm = new Algorithms(instance, algorithmPublishers).getAlgorithm(algorithmName);
 
         Publisher userPublisher = new UserPublisher(socketId, algorithmName);
         Publisher algorithmsDataPublisher = new AlgorithmsDataPublisher(fileId, algorithmName, algorithmType);

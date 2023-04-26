@@ -18,10 +18,10 @@ public class FloydWarshall extends Algorithm {
         this.target = parameters.get("target").toInt();
     }
 
-    public String algorithm() {
+    public double algorithm() {
         FloydWarshallShortestPath bellmanFordShortestPath = new FloydWarshallShortestPath(this.graph);
         Path path = bellmanFordShortestPath.findPath(this.source, this.target);
 
-        return String.valueOf(path.length());
+        return path.length();
     }
 }
