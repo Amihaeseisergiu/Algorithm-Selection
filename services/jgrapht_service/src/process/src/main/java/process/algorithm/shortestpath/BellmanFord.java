@@ -10,18 +10,18 @@ import process.pubsub.Publisher;
 import java.util.List;
 
 public class BellmanFord extends Algorithm {
-    String source;
-    String target;
+    int source;
+    int target;
 
     public BellmanFord(Instance instance, List<Publisher> publishers) {
         super(instance, publishers);
-        this.source = parameters.get("source").toString();
-        this.target = parameters.get("target").toString();
+        this.source = parameters.get("source").toInt();
+        this.target = parameters.get("target").toInt();
     }
 
     public double algorithm() {
-        BellmanFordShortestPath<String, DefaultEdge> bellmanFordShortestPath = new BellmanFordShortestPath<>(this.graph);
-        GraphPath<String, DefaultEdge> path = bellmanFordShortestPath.getPath(this.source, this.target);
+        BellmanFordShortestPath<Integer, DefaultEdge> bellmanFordShortestPath = new BellmanFordShortestPath<>(this.graph);
+        GraphPath<Integer, DefaultEdge> path = bellmanFordShortestPath.getPath(this.source, this.target);
 
         return path.getLength();
     }

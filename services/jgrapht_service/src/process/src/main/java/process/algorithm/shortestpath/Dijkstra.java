@@ -10,18 +10,18 @@ import process.pubsub.Publisher;
 import java.util.List;
 
 public class Dijkstra extends Algorithm {
-    String source;
-    String target;
+    int source;
+    int target;
 
     public Dijkstra(Instance instance, List<Publisher> publishers) {
         super(instance, publishers);
-        this.source = parameters.get("source").toString();
-        this.target = parameters.get("target").toString();
+        this.source = parameters.get("source").toInt();
+        this.target = parameters.get("target").toInt();
     }
 
     public double algorithm() {
-        DijkstraShortestPath<String, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
-        GraphPath<String, DefaultEdge> path = dijkstraShortestPath.getPath(this.source, this.target);
+        DijkstraShortestPath<Integer, DefaultEdge> dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
+        GraphPath<Integer, DefaultEdge> path = dijkstraShortestPath.getPath(this.source, this.target);
 
         return path.getLength();
     }

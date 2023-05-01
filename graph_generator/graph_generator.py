@@ -25,7 +25,7 @@ def generate_shortest_path_instance(n_nodes, weighted=True):
 
 
 def generate_graph_coloring_instance(n_nodes, weighted=True):
-    graph = nx.complete_graph(n_nodes)
+    graph = nx.erdos_renyi_graph(n_nodes, p=0.2)
 
     if weighted:
         for (u, v, w) in graph.edges(data=True):
@@ -50,4 +50,4 @@ def save_to_file(data, path):
 
 if __name__ == '__main__':
     # generate_shortest_path_instance(5000)
-    generate_graph_coloring_instance(100)
+    generate_graph_coloring_instance(1000)

@@ -2,6 +2,7 @@ package process.algorithm;
 
 import lombok.RequiredArgsConstructor;
 import process.algorithm.coloring.DSatur;
+import process.algorithm.coloring.TabuCol;
 import process.algorithm.shortestpath.AStar;
 import process.algorithm.shortestpath.BellmanFord;
 import process.algorithm.shortestpath.Dijkstra;
@@ -26,6 +27,8 @@ public class Algorithms {
                 return new AStar(instance, publishers);
             case "DSatur":
                 return new DSatur(instance, publishers);
+            case "TabuCol":
+                return new TabuCol(instance, publishers);
             default:
                 throw new Exception("Algorithm not implemented");
         }

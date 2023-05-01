@@ -10,7 +10,8 @@ class Algorithms:
                 Algorithm(socket_id, file_id, "A*", "shortest_path")
             ],
             "coloring": [
-                Algorithm(socket_id, file_id, "DSatur", "coloring")
+                Algorithm(socket_id, file_id, "TabuCol", "coloring"),
+                Algorithm(socket_id, file_id, "DSatur", "coloring"),
             ]
         }
 

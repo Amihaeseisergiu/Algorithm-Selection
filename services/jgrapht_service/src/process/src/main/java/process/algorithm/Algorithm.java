@@ -10,7 +10,7 @@ import process.pubsub.Publisher;
 import java.util.List;
 
 public abstract class Algorithm {
-    protected Graph<String, DefaultEdge> graph;
+    protected Graph<Integer, DefaultEdge> graph;
     protected Any parameters;
     protected List<Publisher> publishers;
 

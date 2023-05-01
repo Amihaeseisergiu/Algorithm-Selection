@@ -10,19 +10,19 @@ import process.pubsub.Publisher;
 import java.util.List;
 
 public class AStar extends Algorithm {
-    String source;
-    String target;
+    int source;
+    int target;
 
     public AStar(Instance instance, List<Publisher> publishers) {
         super(instance, publishers);
-        this.source = parameters.get("source").toString();
-        this.target = parameters.get("target").toString();
+        this.source = parameters.get("source").toInt();
+        this.target = parameters.get("target").toInt();
     }
 
     public double algorithm() {
-        AStarShortestPath<String, DefaultEdge> aStarShortestPath =
+        AStarShortestPath<Integer, DefaultEdge> aStarShortestPath =
                 new AStarShortestPath<>(this.graph, (sourceVertex, targetVertex) -> 0);
-        GraphPath<String, DefaultEdge> path = aStarShortestPath.getPath(this.source, this.target);
+        GraphPath<Integer, DefaultEdge> path = aStarShortestPath.getPath(this.source, this.target);
 
         return path.getLength();
     }

@@ -2,6 +2,7 @@ from .shortest_path.astar import AStar
 from .shortest_path.bellman_ford import BellmanFord
 from .shortest_path.dijkstra import Dijkstra
 from .coloring.dsatur import DSatur
+from .coloring.tabucol import TabuCol
 
 
 class Algorithms:
@@ -19,5 +20,7 @@ class Algorithms:
                 return AStar(self.instance, self.publishers)
             case "DSatur":
                 return DSatur(self.instance, self.publishers)
+            case "TabuCol":
+                return TabuCol(self.instance, self.publishers)
             case _:
                 raise NotImplementedError("Algorithm not implemented")

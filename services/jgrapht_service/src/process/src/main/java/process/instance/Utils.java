@@ -9,35 +9,35 @@ import org.jgrapht.util.SupplierUtil;
 import java.util.Optional;
 
 public class Utils {
-    public static Graph<String, DefaultEdge> constructGraph(Any graphJSON) {
+    public static Graph<Integer, DefaultEdge> constructGraph(Any graphJSON) {
         boolean directed = graphJSON.get("directed").toBoolean();
         boolean multiGraph = graphJSON.get("multigraph").toBoolean();
 
-        Graph<String, DefaultEdge> graph;
+        Graph<Integer, DefaultEdge> graph;
 
         if (directed) {
             graph = GraphTypeBuilder
                     .directed().allowingMultipleEdges(multiGraph).allowingSelfLoops(multiGraph)
-                    .vertexSupplier(SupplierUtil.createStringSupplier())
+                    .vertexSupplier(SupplierUtil.createIntegerSupplier())
                     .edgeSupplier(SupplierUtil.DEFAULT_EDGE_SUPPLIER)
                     .weighted(true).buildGraph();
         } else {
             graph = GraphTypeBuilder
                     .undirected().allowingMultipleEdges(multiGraph).allowingSelfLoops(multiGraph)
-                    .vertexSupplier(SupplierUtil.createStringSupplier())
+                    .vertexSupplier(SupplierUtil.createIntegerSupplier())
                     .edgeSupplier(SupplierUtil.DEFAULT_EDGE_SUPPLIER)
                     .weighted(true).buildGraph();
         }
 
         for (Any node: graphJSON.get("nodes").asList()) {
-            String id = node.get("id").toString();
+            int id = node.get("id").toInt();
 
             graph.addVertex(id);
         }
 
         for (Any node: graphJSON.get("edges").asList()) {
-            String source = node.get("source").toString();
-            String target = node.get("target").toString();
+            int source = node.get("source").toInt();
+            int target = node.get("target").toInt();
             double weight = Optional.ofNullable(node.get("weight")).map(Any::toDouble).orElse(0.0);
 
             graph.setEdgeWeight(graph.addEdge(source, target), weight);

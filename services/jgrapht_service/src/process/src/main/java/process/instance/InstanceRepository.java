@@ -17,7 +17,7 @@ public class InstanceRepository {
             Any graphJSON = rootJSON.get("graph");
             Any parametersJSON = rootJSON.get("parameters");
 
-            Graph<String, DefaultEdge> graph = Utils.constructGraph(graphJSON);
+            Graph<Integer, DefaultEdge> graph = Utils.constructGraph(graphJSON);
 
             return new Instance(graph, parametersJSON);
         } catch (IOException e) {
