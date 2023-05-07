@@ -11,4 +11,4 @@ class AStar(Algorithm):
     def algorithm(self):
         path = nx.astar_path(self.graph, int(self.source), int(self.target))
 
-        return len(path) - 1
+        self.best_result = len(path) - 1

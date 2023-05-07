@@ -21,4 +21,4 @@ class UserPublisher(Publisher):
         self.envelope['header']['event_name'] = event_name
         self.envelope['payload'] = payload
 
-        super().send(json.dumps(self.envelope), 0)
+        return super().send(json.dumps(self.envelope))

@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 
@@ -15,10 +16,10 @@ if __name__ == "__main__":
     algorithm_type = parameters[2]
     file_id = parameters[3]
     socket_id = parameters[4]
-    start_time = float(parameters[5])
+    start_time = time.time()
 
     profiler = Profiler(socket_id, file_id, algorithm_name, algorithm_type)
-    profiler.start()
+    profiler_thread = profiler.start()
 
     algorithmPublishers = [
         AlgorithmsDataPublisher(file_id, algorithm_name, algorithm_type)
@@ -48,4 +49,7 @@ if __name__ == "__main__":
     )
 
     algorithm.run()
+
     profiler.stop()
+    profiler_thread.join()
+    os._exit(0)

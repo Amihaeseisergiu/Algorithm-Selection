@@ -14,4 +14,5 @@ class AlgorithmsDataPublisher(Publisher):
 
     def send(self, data):
         self.envelope['payload'] = data
-        super().send(json.dumps(self.envelope), 0)
+
+        return super().send(json.dumps(self.envelope))

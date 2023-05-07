@@ -1,5 +1,4 @@
 import pika
-import time
 from threading import Thread
 from security.credentials import CredentialsProvider
 
@@ -10,9 +9,7 @@ class Publisher:
         self.routing_key = routing_key
         self.exchange_type = exchange_type
 
-    def __callback(self, data, delay):
-        time.sleep(delay)
-
+    def __callback(self, data):
         parameters = pika.ConnectionParameters(host='rabbitmq', credentials=CredentialsProvider.get_credentials())
 
         connection = pika.BlockingConnection(parameters)
@@ -24,6 +21,8 @@ class Publisher:
             body=data)
         connection.close()
 
-    def send(self, data, delay=0):
-        thread = Thread(target=self.__callback, args=(data, delay,))
+    def send(self, data):
+        thread = Thread(target=self.__callback, args=(data,))
         thread.start()
+
+        return thread

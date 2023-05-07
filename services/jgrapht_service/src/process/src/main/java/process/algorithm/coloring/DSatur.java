@@ -14,9 +14,9 @@ public class DSatur extends Algorithm {
         super(instance, publishers);
     }
 
-    public double algorithm() {
+    public void algorithm() {
         SaturationDegreeColoring<Integer, DefaultEdge> saturationDegreeColoring = new SaturationDegreeColoring<>(this.graph);
 
-        return saturationDegreeColoring.getColoring().getNumberColors();
+        bestResult = saturationDegreeColoring.getColoring().getNumberColors();
     }
 }

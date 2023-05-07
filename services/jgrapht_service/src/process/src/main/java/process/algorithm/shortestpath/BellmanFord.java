@@ -19,10 +19,10 @@ public class BellmanFord extends Algorithm {
         this.target = parameters.get("target").toInt();
     }
 
-    public double algorithm() {
+    public void algorithm() {
         BellmanFordShortestPath<Integer, DefaultEdge> bellmanFordShortestPath = new BellmanFordShortestPath<>(this.graph);
         GraphPath<Integer, DefaultEdge> path = bellmanFordShortestPath.getPath(this.source, this.target);
 
-        return path.getLength();
+        bestResult = path.getLength();
     }
 }

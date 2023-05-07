@@ -82,7 +82,9 @@ class Profiler:
             }
         }
 
-        UserPublisher(self.socket_id, self.algorithm_name).send(user_data)
+        UserPublisher(self.socket_id, self.algorithm_name)\
+            .send(user_data)\
+            .join()
 
         data_aggregator_features = {
             "avg_memory": self.total_memory / self.emitted_data_points,
@@ -90,7 +92,9 @@ class Profiler:
             "total_time": self.last_recorded_time
         }
 
-        AlgorithmsDataPublisher(self.file_id, self.algorithm_name, self.algorithm_type).send(data_aggregator_features)
+        AlgorithmsDataPublisher(self.file_id, self.algorithm_name, self.algorithm_type)\
+            .send(data_aggregator_features)\
+            .join()
 
     def __monitor(self):
         self.start_time = time.time()
@@ -110,7 +114,10 @@ class Profiler:
         self.initialized = True
 
     def start(self):
-        Thread(target=self.__monitor).start()
+        thread = Thread(target=self.__monitor)
+        thread.start()
+
+        return thread
 
     def stop(self):
         self.stopped = True

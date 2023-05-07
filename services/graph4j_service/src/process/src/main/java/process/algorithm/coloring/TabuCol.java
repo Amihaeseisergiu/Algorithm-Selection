@@ -1,6 +1,5 @@
 package process.algorithm.coloring;
 
-import org.graph4j.Graph;
 import org.graph4j.alg.clique.MaximalCliqueFinder;
 import org.graph4j.alg.coloring.DSaturGreedyColoring;
 import org.graph4j.util.Pair;
@@ -24,22 +23,21 @@ public class TabuCol extends Algorithm {
         super(instance, publishers);
     }
 
-    public double algorithm() {
+    public void algorithm() {
         int lowerBound = new MaximalCliqueFinder(this.graph).getMaximalClique().size();
         int upperBound = new DSaturGreedyColoring(this.graph).findColoring().numUsedColors();
+        this.bestResult = upperBound;
 
-        for (int numberOfColors = lowerBound; numberOfColors < upperBound; numberOfColors++) {
-            System.out.println("Trying with " + numberOfColors + "/" + upperBound + " colors");
-            if (tabucol(this.graph, numberOfColors, 10, 10, 100, false) != null) {
-                return numberOfColors;
+        for (int numberOfColors = upperBound - 1; numberOfColors >= lowerBound; numberOfColors--) {
+            System.out.println("TabuCol Trying with " + numberOfColors + "/" + upperBound + " colors");
+            if (tabucol(numberOfColors, 100, 10, 1000, false) == null) {
+                this.bestResult = numberOfColors + 1;
+                break;
             }
         }
-
-        return upperBound;
     }
 
-    public static Map<Integer, Integer> tabucol(Graph graph, int numberOfColors,
-                                                int tabuSize, int reps, int maxIterations, boolean debug) {
+    private Map<Integer, Integer> tabucol(int numberOfColors, int tabuSize, int reps, int maxIterations, boolean debug) {
         // nodes are represented with indices, [0, 1, ..., n-1]
         // colors are represented by numbers, [0, 1, ..., k-1]
         List<Integer> colors = new ArrayList<>();
@@ -144,6 +142,10 @@ public class TabuCol extends Algorithm {
                         System.out.println(conflictCount + " -> " + newConflicts);
                     }
 
+                    if (newConflicts < bestHeuristicScore) {
+                        bestHeuristicScore = newConflicts;
+                    }
+
                     break;
                 }
             }
@@ -175,6 +177,7 @@ public class TabuCol extends Algorithm {
             return null;
         } else {
             System.out.println("Found coloring: " + solution);
+            bestHeuristicScore = 0;
             return solution;
         }
     }

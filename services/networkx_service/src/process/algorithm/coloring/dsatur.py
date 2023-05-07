@@ -10,4 +10,4 @@ class DSatur(Algorithm):
         color_map = nx.coloring.greedy_color(self.graph, strategy="DSATUR")
         num_colors = max(color_map.values()) + 1
 
-        return num_colors
+        self.best_result = num_colors

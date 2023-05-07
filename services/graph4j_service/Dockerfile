@@ -38,4 +38,6 @@ ENV DATA_AGGREGATOR_TOPIC=data_aggregator
 ENV ALGORITHMS_DATA_KEY=algorithms.data
 ENV INSTANCE_FEATURES_KEY=instance.features
 
+ENV ALGORITHM_TIMEOUT=20
+
 CMD python3 /app/src/service.py

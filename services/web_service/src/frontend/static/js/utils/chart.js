@@ -3,7 +3,7 @@ import {binarySearch} from "./algorithms.js";
 
 export function plotMetrics(libraryName, algorithmName, metricData, time) {
     Object.keys(metricData).forEach((metricName) => {
-        let metricPlot = App[`${libraryName}-${algorithmName}-plots`][`${metricName}`];
+        let metricPlot = App.data[`${libraryName}-${algorithmName}-plots`][`${metricName}`];
 
         addPlotTimeData(metricPlot, metricData[metricName], time);
     });
@@ -23,8 +23,8 @@ export function addPlotTimeData(plot, data, time) {
 }
 
 export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosition) {
-    for (const metricName in App[`${libraryName}-${algorithmName}-plots`]) {
-        let plot = App[`${libraryName}-${algorithmName}-plots`][metricName];
+    for (const metricName in App.data[`${libraryName}-${algorithmName}-plots`]) {
+        let plot = App.data[`${libraryName}-${algorithmName}-plots`][metricName];
 
         let interval = binarySearch(plot.data.labels, xPosition);
         let position = interval[0];
@@ -40,7 +40,7 @@ export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosit
             }
         }
 
-        createVerticalLine(App[`${libraryName}-${algorithmName}-plots`][metricName], name, position);
+        createVerticalLine(App.data[`${libraryName}-${algorithmName}-plots`][metricName], name, position);
     }
 }
 
@@ -72,7 +72,7 @@ export function createAlgorithmPlots(libraryName, algorithmName) {
     let memoryCanvas = get(`${libraryName}-${algorithmName}-plot-memory`);
     let cpuCanvas = get(`${libraryName}-${algorithmName}-plot-cpu`);
 
-    App[`${libraryName}-${algorithmName}-plots`] = {
+    App.data[`${libraryName}-${algorithmName}-plots`] = {
         "memory": new Chart(memoryCanvas,
             {
                 type: 'line',

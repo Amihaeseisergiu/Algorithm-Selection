@@ -30,7 +30,7 @@ export function addAlgorithmsMetricsHTML(libraryName, algorithmName) {
         let newAlgorithmElement = createAlgorithmMetricsHTML(libraryName, algorithmName);
         libraryElement.appendChild(newAlgorithmElement);
 
-        if (!(`${libraryName}-${algorithmName}-plots` in App)) {
+        if (!(`${libraryName}-${algorithmName}-plots` in App.data)) {
             createAlgorithmPlots(libraryName, algorithmName);
         }
 

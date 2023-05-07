@@ -24,7 +24,7 @@ public class Main {
         Instant startTime = Instant.now();
 
         Profiler profiler = new Profiler(socketId, fileId, algorithmName, algorithmType);
-        profiler.start();
+        Thread profilerThread = profiler.start();
 
         List<Publisher> algorithmPublishers = List.of(
                 new AlgorithmsDataPublisher(fileId, algorithmName, algorithmType)
@@ -51,6 +51,9 @@ public class Main {
         );
 
         algorithm.run();
+
         profiler.stop();
+        profilerThread.join();
+        System.exit(0);
     }
 }

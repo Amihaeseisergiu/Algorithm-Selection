@@ -2,6 +2,7 @@ import networkx as nx
 from algorithm.algorithm import Algorithm
 from collections import deque
 from random import randrange
+from networkx.algorithms import approximation
 
 
 class TabuCol(Algorithm):
@@ -9,15 +10,15 @@ class TabuCol(Algorithm):
         super().__init__(instance, publishers)
 
     def algorithm(self):
-        lower_bound = max(len(c) for c in nx.find_cliques(self.graph))
+        lower_bound = len(approximation.max_clique(self.graph))
         upper_bound = max(nx.coloring.greedy_color(self.graph, strategy="DSATUR").values()) + 1
+        self.best_result = upper_bound
 
-        for n_colors in range(lower_bound, upper_bound):
-            print(f"Trying with {n_colors}/{upper_bound} colors", flush=True)
-            if self.tabucol(self.graph, n_colors, debug=False):
-                return n_colors
-
-        return upper_bound
+        for n_colors in range(upper_bound - 1, lower_bound, -1):
+            print(f"TabuCol Trying with {n_colors}/{upper_bound} colors", flush=True)
+            if not self.tabucol(self.graph, n_colors, debug=False):
+                self.best_result = n_colors + 1
+                break
 
     def tabucol(self, graph, number_of_colors, tabu_size=10, reps=10, max_iterations=100, debug=False):
         # nodes are represented with indices, [0, 1, ..., n-1]
@@ -98,6 +99,10 @@ class TabuCol(Algorithm):
                             continue
                     if debug:
                         print(f"{conflict_count} -> {new_conflicts}", flush=True)
+
+                    if new_conflicts < self.best_heuristic_score:
+                        self.best_heuristic_score = new_conflicts
+
                     break
 
             # At this point, either found a better solution,
@@ -125,4 +130,5 @@ class TabuCol(Algorithm):
             return None
         else:
             print(f"Found coloring: {solution}\n", flush=True)
+            self.best_heuristic_score = 0
             return solution

@@ -1,6 +1,7 @@
 package process.algorithm;
 
 import lombok.RequiredArgsConstructor;
+import process.algorithm.coloring.ColoringGeneticAlgorithm;
 import process.algorithm.coloring.DSatur;
 import process.algorithm.coloring.TabuCol;
 import process.algorithm.shortestpath.AStar;
@@ -18,19 +19,14 @@ public class Algorithms {
     private final List<Publisher> publishers;
 
     public Algorithm getAlgorithm(String algorithmName) throws Exception {
-        switch (algorithmName) {
-            case "Dijkstra":
-                return new Dijkstra(instance, publishers);
-            case "Bellman-Ford":
-                return new BellmanFord(instance, publishers);
-            case "A*":
-                return new AStar(instance, publishers);
-            case "DSatur":
-                return new DSatur(instance, publishers);
-            case "TabuCol":
-                return new TabuCol(instance, publishers);
-            default:
-                throw new Exception("Algorithm not implemented");
-        }
+        return switch (algorithmName) {
+            case "Dijkstra" -> new Dijkstra(instance, publishers);
+            case "Bellman-Ford" -> new BellmanFord(instance, publishers);
+            case "A*" -> new AStar(instance, publishers);
+            case "DSatur" -> new DSatur(instance, publishers);
+            case "TabuCol" -> new TabuCol(instance, publishers);
+            case "Coloring Genetic Algorithm" -> new ColoringGeneticAlgorithm(instance, publishers);
+            default -> throw new Exception("Algorithm not implemented");
+        };
     }
 }

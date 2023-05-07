@@ -2,11 +2,11 @@ package process.algorithm.coloring;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 import org.jgrapht.alg.color.SaturationDegreeColoring;
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.graph.DefaultEdge;
 import process.algorithm.Algorithm;
+import process.algorithm.Utils;
 import process.instance.Instance;
 import process.pubsub.Publisher;
 
@@ -26,34 +26,21 @@ public class TabuCol extends Algorithm {
         super(instance, publishers);
     }
 
-    public double algorithm() {
-        int lowerBound = largestClique(graph);
-        int upperBound = new  SaturationDegreeColoring<>(this.graph).getColoring().getNumberColors();
+    public void algorithm() {
+        int lowerBound = Utils.largestClique(graph);
+        int upperBound = new SaturationDegreeColoring<>(this.graph).getColoring().getNumberColors();
+        bestResult = upperBound;
 
-        for (int numberOfColors = lowerBound; numberOfColors < upperBound; numberOfColors++) {
+        for (int numberOfColors = upperBound - 1; numberOfColors >= lowerBound; numberOfColors--) {
             System.out.println("Trying with " + numberOfColors + "/" + upperBound + " colors");
-            if (tabucol(this.graph, numberOfColors, 10, 10, 100, false) != null) {
-                return numberOfColors;
+            if (tabucol(this.graph, numberOfColors, 10, 10, 100, false) == null) {
+                bestResult = numberOfColors + 1;
+                break;
             }
         }
-
-        return upperBound;
     }
 
-    public int largestClique(Graph<Integer, DefaultEdge> graph) {
-        BronKerboschCliqueFinder<Integer, DefaultEdge> cliqueFinder = new BronKerboschCliqueFinder<>(graph);
-        int maxCliqueSize = 0;
-
-        for (Set<Integer> clique : cliqueFinder) {
-            if (clique.size() > maxCliqueSize) {
-                maxCliqueSize = clique.size();
-            }
-        }
-
-        return maxCliqueSize;
-    }
-
-    public static Map<Integer, Integer> tabucol(Graph<Integer, DefaultEdge> graph, int numberOfColors,
+    private Map<Integer, Integer> tabucol(Graph<Integer, DefaultEdge> graph, int numberOfColors,
                                                 int tabuSize, int reps, int maxIterations, boolean debug) {
         // nodes are represented with indices, [0, 1, ..., n-1]
         // colors are represented by numbers, [0, 1, ..., k-1]
@@ -159,6 +146,10 @@ public class TabuCol extends Algorithm {
                         System.out.println(conflictCount + " -> " + newConflicts);
                     }
 
+                    if (newConflicts < bestHeuristicScore) {
+                        bestHeuristicScore = newConflicts;
+                    }
+
                     break;
                 }
             }
@@ -190,6 +181,7 @@ public class TabuCol extends Algorithm {
             return null;
         } else {
             System.out.println("Found coloring: " + solution);
+            bestHeuristicScore = 0;
             return solution;
         }
     }

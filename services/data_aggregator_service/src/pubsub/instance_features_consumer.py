@@ -98,7 +98,8 @@ class InstanceFeaturesConsumer(Consumer):
             ]
         ))
 
-        library_winner = sorted(library_algorithms, key=lambda e: (e['result'], e['score']))[0]
+        library_winner = sorted(library_algorithms,
+                                key=lambda e: (e['result'], e['heuristic_score'], e['score']))[0]
 
         libraries_winners_collection.update_one(
             filter={
@@ -128,7 +129,8 @@ class InstanceFeaturesConsumer(Consumer):
         ))
 
         if len(libraries_algorithms) == n_libraries:
-            global_winner = sorted(libraries_algorithms, key=lambda e: (e['result'], e['score']))[0]
+            global_winner = sorted(libraries_algorithms,
+                                   key=lambda e: (e['result'], e['heuristic_score'], e['score']))[0]
 
             dataset_collection = Database.get("data")["dataset"]
             dataset_collection.create_index(

@@ -137,8 +137,11 @@ public class Profiler {
         initialized = true;
     }
 
-    public void start() {
-        new Thread(this::monitor).start();
+    public Thread start() {
+        Thread thread = new Thread(this::monitor);
+        thread.start();
+
+        return thread;
     }
 
     public void stop() {

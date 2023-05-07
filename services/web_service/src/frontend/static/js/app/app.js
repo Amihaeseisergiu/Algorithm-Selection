@@ -6,6 +6,9 @@ import {addAlgorithmSelectionResults} from "../components/selection.js";
 export function initializeApp(afterInitialization) {
     window.App = {};
     App.socket = io();
+    App.data = {};
+
+    let initialized = false;
 
     get("libraries").innerHTML = `
         <div class="w-full" id="algorithm-selection">
@@ -77,6 +80,9 @@ export function initializeApp(afterInitialization) {
             addAlgorithmSelectionResults(data);
         });
 
-        afterInitialization();
+        if (!initialized) {
+            afterInitialization();
+            initialized = true;
+        }
     });
 }

@@ -13,9 +13,9 @@ public class DSatur extends Algorithm {
         super(instance, publishers);
     }
 
-    public double algorithm() {
+    public void algorithm() {
         DSaturGreedyColoring dSaturGreedyColoring = new DSaturGreedyColoring(this.graph);
 
-        return dSaturGreedyColoring.findColoring().numUsedColors();
+        bestResult = dSaturGreedyColoring.findColoring().numUsedColors();
     }
 }
