@@ -11,7 +11,7 @@ class Algorithms:
             "coloring": [
                 Algorithm(socket_id, file_id, "Coloring Genetic Algorithm", "coloring"),
                 Algorithm(socket_id, file_id, "TabuCol", "coloring"),
-                Algorithm(socket_id, file_id, "DSatur", "coloring"),
+                Algorithm(socket_id, file_id, "Coloring Backtrack", "coloring"),
             ],
         }
 

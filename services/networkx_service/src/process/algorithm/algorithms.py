@@ -1,7 +1,7 @@
 from .shortest_path.astar import AStar
 from .shortest_path.bellman_ford import BellmanFord
 from .shortest_path.dijkstra import Dijkstra
-from .coloring.dsatur import DSatur
+from .coloring.coloring_backtrack import ColoringBacktrack
 from .coloring.tabucol import TabuCol
 from .coloring.coloring_genetic_algorithm import ColoringGeneticAlgorithm
 
@@ -19,8 +19,8 @@ class Algorithms:
                 return BellmanFord(self.instance, self.publishers)
             case "A*":
                 return AStar(self.instance, self.publishers)
-            case "DSatur":
-                return DSatur(self.instance, self.publishers)
+            case "Coloring Backtrack":
+                return ColoringBacktrack(self.instance, self.publishers)
             case "TabuCol":
                 return TabuCol(self.instance, self.publishers)
             case "Coloring Genetic Algorithm":

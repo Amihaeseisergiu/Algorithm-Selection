@@ -21,4 +21,6 @@ ENV INSTANCES_TOPIC=instances
 ENV INSTANCES_QUEUE=selector_instances
 ENV INSTANCES_KEY=instances.selector
 
+ENV MAJORITY_VOTING_DATAPOINTS=10
+
 CMD python3 /app/src/service.py

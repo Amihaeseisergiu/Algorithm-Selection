@@ -1,5 +1,6 @@
 import os
 import json
+from collections import Counter
 from .consumer import Consumer
 from .user_algorithm_publisher import UserAlgorithmPublisher
 from repository.features_extractor import FeaturesExtractor
@@ -37,14 +38,24 @@ class InstanceConsumer(Consumer):
                 "vector": features,
                 "certainty": 0.7
             })
-            .with_limit(1)
+            .with_limit(int(os.environ["MAJORITY_VOTING_DATAPOINTS"]))
             .do()
         )['data']['Get'][schema_class]
 
         user_envelope = Envelope.create_end_user_envelope(socket_id, "selected_data")
 
         if results:
-            user_envelope['payload'] = results[0]
+            results_libraries = Counter()
+            results_algorithms = Counter()
+
+            for result in results:
+                results_libraries[result['library']] += 1
+                results_algorithms[result['algorithm']] += 1
+
+            user_envelope['payload'] = {
+                'library': results_libraries.most_common(1)[0][0],
+                'algorithm': results_algorithms.most_common(1)[0][0]
+            }
         else:
             user_envelope['header']['error'] = 'Unavailable dataset'
 

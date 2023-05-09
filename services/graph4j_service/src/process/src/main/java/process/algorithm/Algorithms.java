@@ -1,8 +1,8 @@
 package process.algorithm;
 
 import lombok.RequiredArgsConstructor;
+import process.algorithm.coloring.ColoringBacktrack;
 import process.algorithm.coloring.ColoringGeneticAlgorithm;
-import process.algorithm.coloring.DSatur;
 import process.algorithm.coloring.TabuCol;
 import process.algorithm.shortestpath.FloydWarshall;
 import process.algorithm.shortestpath.BellmanFord;
@@ -23,7 +23,7 @@ public class Algorithms {
             case "Dijkstra" -> new Dijkstra(instance, publishers);
             case "Bellman-Ford" -> new BellmanFord(instance, publishers);
             case "Floyd-Warshall" -> new FloydWarshall(instance, publishers);
-            case "DSatur" -> new DSatur(instance, publishers);
+            case "Coloring Backtrack" -> new ColoringBacktrack(instance, publishers);
             case "TabuCol" -> new TabuCol(instance, publishers);
             case "Coloring Genetic Algorithm" -> new ColoringGeneticAlgorithm(instance, publishers);
             default -> throw new Exception("Algorithm not implemented");
