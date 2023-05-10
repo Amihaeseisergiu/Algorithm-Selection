@@ -20,7 +20,7 @@ class ColoringGeneticAlgorithm(Algorithm):
                 break
 
     def genetic_algorithm(self, max_generations, population_size, num_colors, crossover_probability, mutation_rate):
-        population = np.zeros((population_size, len(self.graph)), dtype=int)
+        population = np.zeros((population_size, len(self.graph) + 1), dtype=int)
         fitness = np.zeros(population_size)
 
         best_solution_index = -1
@@ -29,7 +29,7 @@ class ColoringGeneticAlgorithm(Algorithm):
 
         # Initial initialization and evaluation of the population
         for i in range(population_size):
-            for j in range(len(self.graph)):
+            for j in range(len(self.graph) + 1):
                 population[i][j] = random.randint(0, num_colors - 1)
 
             conflicts = self.get_conflicts(population[i])
@@ -119,7 +119,7 @@ class ColoringGeneticAlgorithm(Algorithm):
     def get_conflicts(self, coloring):
         conflicts = 0
 
-        for i in range(len(self.graph)):
+        for i in self.graph.nodes():
             for j in self.graph.neighbors(i):
                 if coloring[i] == coloring[j]:
                     conflicts += 1

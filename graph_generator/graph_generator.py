@@ -1,6 +1,7 @@
 import json
 import random
 import networkx as nx
+from pathlib import Path
 
 
 def generate_shortest_path_instance(n_nodes, weighted=True):
@@ -21,7 +22,7 @@ def generate_shortest_path_instance(n_nodes, weighted=True):
         "graph": node_link_data
     }
 
-    save_to_file(instance, f'./output/shortest_path_{n_nodes}.json')
+    save_to_file(instance, f'./output/shortest_path/shortest_path_{n_nodes}.json')
 
 
 def generate_graph_coloring_instance(n_nodes, weighted=True):
@@ -40,10 +41,12 @@ def generate_graph_coloring_instance(n_nodes, weighted=True):
         "graph": node_link_data
     }
 
-    save_to_file(instance, f'./output/coloring_{n_nodes}.json')
+    save_to_file(instance, f'./output/coloring/coloring_{n_nodes}.json')
 
 
 def save_to_file(data, path):
+    Path(Path(path).parent).mkdir(parents=True, exist_ok=True)
+
     with open(path, 'w') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 

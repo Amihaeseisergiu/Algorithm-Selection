@@ -32,7 +32,7 @@ class TabuCol(Algorithm):
         # solution is a map of nodes to colors
         # Generate a random solution:
         solution = dict()
-        for i in range(len(graph)):
+        for i in range(len(graph) + 1):
             solution[i] = colors[randrange(0, len(colors))]
 
         # Aspiration level A(z), represented by a mapping: f(s) -> best f(s') seen so far
@@ -44,7 +44,7 @@ class TabuCol(Algorithm):
             # Count node pairs (i,j) which are adjacent and have the same color.
             move_candidates = set()  # use a set to avoid duplicates
             conflict_count = 0
-            for i in range(len(graph)):
+            for i in graph.nodes():
                 for j in graph.neighbors(i):  # assume undirected graph, ignoring self-loops
                     if solution[i] == solution[j]:  # same color
                         move_candidates.add(i)
@@ -77,7 +77,7 @@ class TabuCol(Algorithm):
                 # Count adjacent pairs with the same color in the new solution.
                 new_conflicts = 0
 
-                for i in range(len(graph)):
+                for i in graph.nodes():
                     for j in graph.neighbors(i):
                         if new_solution[i] == new_solution[j]:
                             new_conflicts += 1

@@ -27,8 +27,8 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=pass
       - MONGODB_DATA_DIR=/data/db
       - MONGODB_LOG_DIR=/dev/null
-    # volumes:
-     #  - ../docker_data/mongodb:/data/db
+    volumes:
+      - ../docker_data/mongodb:/data/db
 
   weaviate:
     command:
@@ -49,8 +49,8 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'none'
       ENABLE_MODULES: ''
       CLUSTER_HOSTNAME: 'node1'
-    # volumes:
-     #  - ../docker_data/weaviate:/var/lib/weaviate
+    volumes:
+      - ../docker_data/weaviate:/var/lib/weaviate
 
   web-service:
     build: ./web_service
