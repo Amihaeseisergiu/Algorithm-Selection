@@ -30,7 +30,7 @@
                     Algorithm Selection
                 </div>
             </div>
-            <div id="instance-metadata" class="w-full p-4" x-data="{algorithmType: 'Select algorithm type', mode: 0}">
+            <div id="instance-metadata" class="w-full p-4" x-data="{mode: 0}">
                 <div class="w-full font-semibold rounded-2xl border-2 border-solid border-gray-300 shadow
                                text-neutral-400 my-2 cursor-pointer duration-500 flex flex-row divide-x-2">
                     <div class="w-1/2 h-full text-center p-2 rounded-l-2xl scale-[1.008] transition-all duration-500"
@@ -52,32 +52,6 @@
                                hover:text-neutral-500 hover:scale-[1.02] shadow hover:shadow-xl"
                        value="Select instance"/>
                 <input class="hidden" type="file" name="upload-instance-input" id="upload-instance-input">
-
-                <div class="w-full flex flex-col items-center"
-                     x-data="{selected: false}"
-                     @mouseenter="selected = true"
-                     @mouseleave="selected = false">
-                    <button type="button"
-                            class="w-full font-semibold rounded-2xl border-2 border-solid border-gray-300
-                                text-neutral-400 py-2 px-4 my-2 cursor-pointer duration-500 hover:border-rose-400
-                                hover:text-neutral-500 hover:scale-[1.02] hover:shadow-xl"
-                            :class="selected ? 'shadow-xl text-neutral-500 border-rose-400 scale-[1.02]' : 'shadow'">
-                        <div x-text="algorithmType"></div>
-                    </button>
-
-                    <div class="max-h-0 w-11/12 overflow-hidden transition-all duration-500 rounded-b-2xl
-                             shadow-lg -mt-2"
-                         x-ref="selectAlgorithmType"
-                         :style="selected ? 'max-height: ' + $refs[`selectAlgorithmType`].scrollHeight + 'px' : ''">
-                        <div class="p-2 w-full flex flex-col">
-                            <template x-for="algType in supportedAlgorithmTypes">
-                                <button class="p-2 border-b-2 rounded-b-xl transition-all hover:text-rose-400 hover:font-bold"
-                                        x-text="algType" @click="algorithmType = algType">
-                                </button>
-                            </template>
-                        </div>
-                    </div>
-                </div>
 
                 <button class="bg-rose-400 text-white absolute bottom-2 right-2
                         font-semibold p-3 border border-rose-400 rounded-full

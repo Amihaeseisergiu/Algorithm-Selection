@@ -20,7 +20,7 @@ class ColoringGeneticAlgorithm(Algorithm):
                 break
 
     def genetic_algorithm(self, max_generations, population_size, num_colors, crossover_probability, mutation_rate):
-        population = np.zeros((population_size, len(self.graph) + 1), dtype=int)
+        population = np.zeros((population_size, len(self.graph)), dtype=int)
         fitness = np.zeros(population_size)
 
         best_solution_index = -1
@@ -29,7 +29,7 @@ class ColoringGeneticAlgorithm(Algorithm):
 
         # Initial initialization and evaluation of the population
         for i in range(population_size):
-            for j in range(len(self.graph) + 1):
+            for j in range(len(self.graph)):
                 population[i][j] = random.randint(0, num_colors - 1)
 
             conflicts = self.get_conflicts(population[i])
@@ -109,19 +109,21 @@ class ColoringGeneticAlgorithm(Algorithm):
             generation += 1
 
         if best_fitness < 1.0:
-            print("No coloring found with " + str(num_colors) + " colors")
+            print("No coloring found with " + str(num_colors) + " colors", flush=True)
             return None
         else:
-            print("Found coloring in " + str(generation) + " generations")
+            print("Found coloring in " + str(generation) + " generations", flush=True)
             self.best_heuristic_score = 0
             return population[best_solution_index]
 
     def get_conflicts(self, coloring):
         conflicts = 0
 
-        for i in self.graph.nodes():
-            for j in self.graph.neighbors(i):
-                if coloring[i] == coloring[j]:
+        for index1, node1 in enumerate(self.graph.nodes()):
+            for node2 in self.graph.neighbors(node1):
+                index2 = list(self.graph.nodes()).index(node2)
+
+                if coloring[index1] == coloring[index2]:
                     conflicts += 1
 
         return conflicts

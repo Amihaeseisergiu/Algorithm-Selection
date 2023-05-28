@@ -27,7 +27,7 @@ export function createPlotsVerticalLine(libraryName, algorithmName, name, xPosit
         let plot = App.data[`${libraryName}-${algorithmName}-plots`][metricName];
 
         let interval = binarySearch(plot.data.labels, xPosition);
-        let position = interval[0];
+        let position = interval[0] === -1 ? 0 : interval[0];
 
         if (plot.data.labels[interval[1]]) {
             if (xPosition === plot.data.labels[interval[0]]) {

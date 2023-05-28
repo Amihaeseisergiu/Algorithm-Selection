@@ -1,8 +1,8 @@
 FROM arm64v8/maven:3.8-amazoncorretto-19 AS build
 COPY /src/process /process
 
-RUN mvn install:install-file -Dfile=/process/dependencies/graph4j-1.0.3.jar -DgroupId=org.graph4j -DartifactId=graph4j \
-     -Dversion=1.0.3 -Dpackaging=jar
+RUN mvn install:install-file -Dfile=/process/dependencies/graph4j-1.0.4.jar -DgroupId=org.graph4j -DartifactId=graph4j \
+     -Dversion=1.0.4 -Dpackaging=jar
 RUN mvn -f /process/pom.xml compile assembly:single
 
 FROM python:3.10

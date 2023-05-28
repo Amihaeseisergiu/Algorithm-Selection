@@ -17,13 +17,13 @@ public class Utils {
 
         if (directed) {
             graph = GraphTypeBuilder
-                    .directed().allowingMultipleEdges(multiGraph).allowingSelfLoops(multiGraph)
+                    .directed().allowingMultipleEdges(true).allowingSelfLoops(true)
                     .vertexSupplier(SupplierUtil.createIntegerSupplier())
                     .edgeSupplier(SupplierUtil.DEFAULT_EDGE_SUPPLIER)
                     .weighted(true).buildGraph();
         } else {
             graph = GraphTypeBuilder
-                    .undirected().allowingMultipleEdges(multiGraph).allowingSelfLoops(multiGraph)
+                    .undirected().allowingMultipleEdges(true).allowingSelfLoops(true)
                     .vertexSupplier(SupplierUtil.createIntegerSupplier())
                     .edgeSupplier(SupplierUtil.DEFAULT_EDGE_SUPPLIER)
                     .weighted(true).buildGraph();

@@ -1,7 +1,9 @@
 import os
+import json
 from flask import Flask
 from resources.root import Root
 from repository.database import Database
+from pubsub.dataset_entry_publisher import DatasetEntryPublisher
 from pubsub.algorithms_data_consumer import AlgorithmsDataConsumer
 from pubsub.instance_features_consumer import InstanceFeaturesConsumer
 from flask_restful import Api
@@ -41,6 +43,24 @@ def dataset():
         filter={},
         projection={"_id": 0}
     ))
+
+
+@app.route("/republish")
+def republish():
+    try:
+        dataset_collection = Database.get("data")["dataset"]
+
+        data = list(dataset_collection.find(
+            filter={},
+            projection={"_id": 0}
+        ))
+
+        for item in data:
+            DatasetEntryPublisher().send(json.dumps(item))
+    except Exception as e:
+        return f"Failed to republish. Exception {e}"
+
+    return f"Successfully republished {len(data)} items"
 
 
 if __name__ == '__main__':

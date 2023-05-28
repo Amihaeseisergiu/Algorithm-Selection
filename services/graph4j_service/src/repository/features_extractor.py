@@ -9,9 +9,10 @@ from networkx.algorithms import bipartite
 
 
 class FeaturesExtractor:
-    def __init__(self, file_id, algorithm_type):
+    def __init__(self, file_id, file_name, algorithm_type):
         self.library_name = os.environ["LIBRARY_NAME"]
         self.file_id = file_id
+        self.file_name = file_name
         self.algorithm_type = algorithm_type
         self.instance = InstanceRepository.load_instance_file(file_id)
         self.graph = nx.node_link_graph(self.instance['graph'], link="edges")
@@ -59,7 +60,7 @@ class FeaturesExtractor:
         ]
 
         instance_features_envelope = Envelope.create_instance_features_envelope(
-            file_id=self.file_id, algorithm_type=self.algorithm_type)
+            file_id=self.file_id, file_name=self.file_name, algorithm_type=self.algorithm_type)
         instance_features_envelope['payload']['features'] = features
 
         InstanceFeaturesPublisher().send(json.dumps(instance_features_envelope))

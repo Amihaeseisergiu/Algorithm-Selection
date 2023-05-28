@@ -50,7 +50,7 @@ public class Utils {
             double weight = Optional.ofNullable(node.get("weight")).map(Any::toDouble).orElse(0.0);
 
             graph.addEdge(source, target);
-            graph.setEdgeWeight(source, target, weight);
+            //graph.setEdgeWeight(source, target, weight);
         }
 
         return graph;

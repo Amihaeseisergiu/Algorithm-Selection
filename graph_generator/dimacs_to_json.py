@@ -28,26 +28,28 @@ def dimacs_to_graph(path):
     return graph
 
 
-def dimacs_to_json_coloring(path):
+def dimacs_to_json(path, algorithm_type, parameters=None):
+    if parameters is None:
+        parameters = {}
+
     graph = dimacs_to_graph(path)
 
     node_link_data = nx.node_link_data(graph, link="edges")
 
     instance = {
-        "algorithm_type": "coloring",
-        "parameters": {
-        },
+        "algorithm_type": algorithm_type,
+        "parameters": parameters,
         "graph": node_link_data
     }
 
     file_name = Path(path).stem
-    save_to_file(instance, f'./output/coloring/coloring_{file_name}.json')
+    save_to_file(instance, f'./output/{algorithm_type}/{file_name}.json')
 
 
-def all_dimacs_to_json(path):
-    for file_path in glob.glob(f"{path}/*.col", recursive=True):
+def all_dimacs_to_json(input_path, algorithm_type):
+    for file_path in glob.glob(f"{input_path}/*.col", recursive=True):
         print(f"Converting {file_path}...")
-        dimacs_to_json_coloring(file_path)
+        dimacs_to_json(file_path, algorithm_type)
 
 
 def bulk_rename(path):
@@ -58,4 +60,4 @@ def bulk_rename(path):
 
 
 if __name__ == '__main__':
-    all_dimacs_to_json('./input/coloring')
+    all_dimacs_to_json('./input/coloring', 'coloring')

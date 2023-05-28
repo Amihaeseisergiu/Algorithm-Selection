@@ -20,43 +20,47 @@ class InstanceConsumer(Consumer):
                          message_processor=self.__consume_instance)
 
     def __consume_instance(self, data):
-        data_json = json.loads(data)
+        try:
+            data_json = json.loads(data)
 
-        socket_id = data_json["socket_id"]
-        file_id = data_json["file_id"]
-        web_service_id = data_json["web_service_id"]
+            socket_id = data_json["socket_id"]
+            file_id = data_json["file_id"]
+            web_service_id = data_json["web_service_id"]
 
-        instance = InstanceRepository.get_instance_file(file_id, web_service_id)
-        algorithm_type = instance['algorithm_type']
-        schema_class = Schema.create_algorithm_type_schema(algorithm_type)
-        features = FeaturesExtractor(instance).extract()
+            instance = InstanceRepository.get_instance_file(file_id, web_service_id)
+            algorithm_type = instance['algorithm_type']
+            schema_class = Schema.create_algorithm_type_schema(algorithm_type)
+            features = FeaturesExtractor(instance).extract()
 
-        results = (
-            Database.client.query
-            .get(schema_class, ["algorithm", "library"])
-            .with_near_vector({
-                "vector": features,
-                "certainty": 0.7
-            })
-            .with_limit(int(os.environ["MAJORITY_VOTING_DATAPOINTS"]))
-            .do()
-        )['data']['Get'][schema_class]
+            results = (
+                Database.client.query
+                .get(schema_class, ["algorithm", "library"])
+                .with_near_vector({
+                    "vector": features,
+                    "certainty": 0.7
+                })
+                .with_limit(int(os.environ["MAJORITY_VOTING_DATAPOINTS"]))
+                .do()
+            )['data']['Get'][schema_class]
 
-        user_envelope = Envelope.create_end_user_envelope(socket_id, "selected_data")
+            user_envelope = Envelope.create_end_user_envelope(socket_id, "selected_data")
 
-        if results:
-            results_libraries = Counter()
-            results_algorithms = Counter()
+            if results:
+                results_libraries = Counter()
+                results_algorithms = Counter()
 
-            for result in results:
-                results_libraries[result['library']] += 1
-                results_algorithms[result['algorithm']] += 1
+                for result in results:
+                    results_libraries[result['library']] += 1
+                    results_algorithms[result['algorithm']] += 1
 
-            user_envelope['payload'] = {
-                'library': results_libraries.most_common(1)[0][0],
-                'algorithm': results_algorithms.most_common(1)[0][0]
-            }
-        else:
-            user_envelope['header']['error'] = 'Unavailable dataset'
+                user_envelope['payload'] = {
+                    'library': results_libraries.most_common(1)[0][0],
+                    'algorithm': results_algorithms.most_common(1)[0][0]
+                }
+            else:
+                user_envelope['header']['error'] = 'Unavailable dataset'
 
-        UserAlgorithmPublisher(socket_id).send(json.dumps(user_envelope))
+            UserAlgorithmPublisher(socket_id).send(json.dumps(user_envelope))
+        except Exception as e:
+            print(e, flush=True)
+            raise e

@@ -30,12 +30,13 @@ class Envelope:
         }
 
     @staticmethod
-    def create_instance_features_envelope(file_id, algorithm_type):
+    def create_instance_features_envelope(file_id, file_name, algorithm_type):
         library_name = os.environ["LIBRARY_NAME"]
 
         return {
             "header": {
                 "file_id": file_id,
+                "file_name": file_name,
                 "algorithm_type": algorithm_type,
                 "library_name": library_name
             },

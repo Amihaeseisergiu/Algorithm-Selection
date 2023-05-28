@@ -32,7 +32,7 @@ class TabuCol(Algorithm):
         # solution is a map of nodes to colors
         # Generate a random solution:
         solution = dict()
-        for i in range(len(graph) + 1):
+        for i in graph.nodes():
             solution[i] = colors[randrange(0, len(colors))]
 
         # Aspiration level A(z), represented by a mapping: f(s) -> best f(s') seen so far

@@ -1,6 +1,6 @@
 package process.algorithm.coloring;
 
-import org.graph4j.alg.coloring.BacktrackColoring;
+import org.graph4j.alg.coloring.exact.ParallelBacktrackColoring;
 import process.algorithm.Algorithm;
 import process.instance.Instance;
 import process.pubsub.Publisher;
@@ -14,9 +14,14 @@ public class ColoringBacktrack extends Algorithm {
     }
 
     public void algorithm() {
-        BacktrackColoring backtrackColoring = new BacktrackColoring(
-                this.graph, Integer.parseInt(System.getenv("ALGORITHM_TIMEOUT")) * 1000);
+        try {
+            ParallelBacktrackColoring backtrackColoring = new ParallelBacktrackColoring(
+                    this.graph, Integer.parseInt(System.getenv("ALGORITHM_TIMEOUT")) * 1000L);
 
-        bestResult = backtrackColoring.findColoring().numUsedColors();
+            bestResult = backtrackColoring.findColoring().numUsedColors();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

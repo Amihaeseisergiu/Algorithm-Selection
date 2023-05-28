@@ -7,9 +7,10 @@ from pubsub.next_library_publisher import NextLibraryPublisher
 
 
 class SequentialExecutor:
-    def __init__(self, socket_id, file_id, algorithm_type, instance_path, bounce_instance_data):
+    def __init__(self, socket_id, file_id, file_name, algorithm_type, instance_path, bounce_instance_data):
         self.socket_id = socket_id
         self.file_id = file_id
+        self.file_name = file_name
         self.instance_path = instance_path
         self.algorithm_type = algorithm_type
         self.bounce_instance_data = bounce_instance_data
@@ -20,7 +21,7 @@ class SequentialExecutor:
         UserMetricPublisher(self.socket_id).send(json.dumps(user_envelope))
         NextLibraryPublisher(self.socket_id).send(json.dumps(self.bounce_instance_data))
 
-        FeaturesExtractor(file_id=self.file_id, algorithm_type=self.algorithm_type).extract()
+        FeaturesExtractor(file_id=self.file_id, file_name=self.file_name, algorithm_type=self.algorithm_type).extract()
 
     def execute(self):
         for algorithm in self.algorithms:

@@ -14,17 +14,21 @@ class DatasetEntryConsumer(Consumer):
                          message_processor=self.__consume_dataset_entry)
 
     def __consume_dataset_entry(self, data):
-        data_json = json.loads(data)
+        try:
+            data_json = json.loads(data)
 
-        schema_class = Schema.create_algorithm_type_schema(data_json['algorithm_type'])
+            schema_class = Schema.create_algorithm_type_schema(data_json['algorithm_type'])
 
-        entry = {
-            "algorithm": data_json["algorithm_name"],
-            "library": data_json["library_name"]
-        }
+            entry = {
+                "algorithm": data_json["algorithm_name"],
+                "library": data_json["library_name"]
+            }
 
-        Database.client.data_object.create(
-            entry,
-            schema_class,
-            vector=data_json['features']
-        )
+            Database.client.data_object.create(
+                entry,
+                schema_class,
+                vector=data_json['features']
+            )
+        except Exception as e:
+            print(e, flush=True)
+            raise e

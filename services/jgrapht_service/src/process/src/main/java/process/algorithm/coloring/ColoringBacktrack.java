@@ -15,8 +15,13 @@ public class ColoringBacktrack extends Algorithm {
     }
 
     public void algorithm() {
-        BrownBacktrackColoring<Integer, DefaultEdge> brownBacktrackColoring = new BrownBacktrackColoring<>(this.graph);
+        try {
+            BrownBacktrackColoring<Integer, DefaultEdge> brownBacktrackColoring = new BrownBacktrackColoring<>(this.graph);
 
-        bestResult = brownBacktrackColoring.getColoring().getNumberColors();
+            bestResult = brownBacktrackColoring.getColoring().getNumberColors();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
