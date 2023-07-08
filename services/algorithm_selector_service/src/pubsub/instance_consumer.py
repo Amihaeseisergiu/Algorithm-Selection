@@ -46,6 +46,8 @@ class InstanceConsumer(Consumer):
             user_envelope = Envelope.create_end_user_envelope(socket_id, "selected_data")
 
             if results:
+                print(f"[X] Closest points: {results}", flush=True)
+
                 results_libraries = Counter()
                 results_algorithms = Counter()
 

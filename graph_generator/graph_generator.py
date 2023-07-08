@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def generate_graph(n_nodes, weighted=True):
-    graph = nx.erdos_renyi_graph(n_nodes, p=0.2)
+    graph = nx.erdos_renyi_graph(n_nodes, p=0.5)
 
     if weighted:
         for (u, v, w) in graph.edges(data=True):
@@ -49,4 +49,4 @@ def save_to_file(data, path):
 
 if __name__ == '__main__':
     # generate_shortest_path_instance(5000)
-    generate_graph_coloring_instance(10)
+    generate_graph_coloring_instance(75)
